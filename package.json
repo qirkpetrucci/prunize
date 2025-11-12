@@ -1,6 +1,6 @@
 {
   "name": "prunize",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Intelligent optimizer that detects the best prompt format to reduce LLM token usage",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -19,6 +19,9 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "clean": "rm -rf dist",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "keywords": [
@@ -44,7 +47,9 @@
     "url": "https://github.com/qirkpetrucci/prunize"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.8",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }

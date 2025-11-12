@@ -36,6 +36,11 @@ Thumbs.db
 # Test coverage and reports
 coverage/
 reports/
+.vitest/
+
+# Examples (independent npm package testing)
+examples/node_modules/
+examples/package-lock.json
 
 # System
 .gitignore~

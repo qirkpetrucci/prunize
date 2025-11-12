@@ -1,0 +1,18 @@
+{
+  "name": "prunize-examples",
+  "version": "1.0.0",
+  "description": "Real-world usage examples for prunize using the published npm package",
+  "private": true,
+  "scripts": {
+    "example:large-text": "ts-node large-text.ts",
+    "examples": "npm run example:large-text"
+  },
+  "dependencies": {
+    "prunize": "^0.1.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "@types/node": "^20.11.0"
+  }
+}

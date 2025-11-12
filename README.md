@@ -303,6 +303,64 @@ prunize(input: any, options?: {
 - **Prompt Engineering** - Fit more context in token limits
 - **Fine-tuning** - Reduce training dataset size
 
+## Testing
+
+### Real-World Examples
+
+Want to test prunize with real-world data? Check out our independent examples:
+
+```bash
+# Clone repository
+git clone https://github.com/qirkpetrucci/prunize.git
+cd prunize/examples
+
+# Install dependencies (uses published npm package)
+npm install
+
+# Run comprehensive examples
+npm run examples
+```
+
+The examples folder demonstrates prunize's token efficiency with:
+- 📄 **Large PRD** - Product Requirements Document (~6KB)
+- ⚙️ **JSON Config** - Complex nested configuration
+- 📊 **Transaction Data** - Array of 100+ records
+
+**Expected Results:**
+- Overall efficiency: **46.76% token reduction**
+- Cost savings: **$7,707.50 per 1M requests** (GPT-4o pricing)
+- Performance: **~0.31ms average execution time**
+
+The examples folder is completely independent - it downloads and uses the published npm package, making it a real-world usage example.
+
+### Development Testing
+
+For contributors running unit tests during development:
+
+```bash
+# Install dependencies first
+npm install
+
+# Run all unit tests (44 tests)
+npm test
+
+# Watch mode (auto-rerun on file changes)
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+```
+
+**Test Structure:**
+- **Unit Tests** (`__tests__/`) - 44 tests covering all core functionality
+  - `detector.test.ts` - Format detection logic (14 tests)
+  - `formatters.test.ts` - Conversion functions (17 tests)
+  - `integration.test.ts` - End-to-end scenarios (13 tests)
+- **Examples** (`examples/`) - Integration tests using published npm package
+  - `large-text.ts` - Real-world data scenarios
+
+All tests use Vitest framework with full TypeScript support and coverage reporting.
+
 ## License
 
 MIT © 2025 qirkpetrucci

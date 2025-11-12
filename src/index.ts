@@ -16,6 +16,11 @@ export interface PrunizeOptions {
    * Use for: PRDs, Jira tickets, specs, documentation with code examples
    */
   optimizeSnippets?: boolean | 'auto';
+  /**
+   * Maximum input size in bytes (default: 100KB)
+   * Set to 0 to disable limit
+   */
+  maxInputSize?: number;
 }
 
 export interface PrunizeResult {
@@ -239,6 +244,22 @@ function shouldUseSnippetOptimization(content: string, verbose: boolean): AutoDe
  * ```
  */
 export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
+  // Constants
+  const MAX_INPUT_SIZE = options?.maxInputSize !== undefined ? options.maxInputSize : 100 * 1024; // 100KB default
+  
+  // Validate input size
+  if (MAX_INPUT_SIZE > 0) {
+    const inputStr = typeof input === 'string' ? input : JSON.stringify(input);
+    const inputSize = new TextEncoder().encode(inputStr).length;
+    
+    if (inputSize > MAX_INPUT_SIZE) {
+      throw new Error(
+        `Input size (${(inputSize / 1024).toFixed(2)} KB) exceeds maximum allowed size (${(MAX_INPUT_SIZE / 1024).toFixed(0)} KB). ` +
+        `Consider chunking your data or increase maxInputSize option.`
+      );
+    }
+  }
+  
   let autoDecision: AutoDecisionResult | undefined;
   
   // Set default optimizeSnippets to 'auto' if not specified

@@ -302,6 +302,37 @@ prunize(input: any, options?: {
 - **Database Results** - Minimize query results
 - **Prompt Engineering** - Fit more context in token limits
 - **Fine-tuning** - Reduce training dataset size
+- **RAG Integration** - Optimize retrieved context before LLM
+
+### RAG Integration
+
+Prunize works great with Retrieval-Augmented Generation (RAG) systems to optimize retrieved context:
+
+```typescript
+// Optimize structured metadata from vector database
+const results = await vectorStore.similaritySearch(query, 5);
+
+const optimizedContext = results.map(result => {
+  // Optimize structured metadata (40-60% savings)
+  if (result.metadata && typeof result.metadata === 'object') {
+    const optimized = prunize(result.metadata);
+    return `${result.pageContent}\nMeta: ${optimized.output}`;
+  }
+  return result.pageContent;
+}).join('\n---\n');
+
+const prompt = `Context:\n${optimizedContext}\n\nQuestion: ${query}`;
+```
+
+**Best for:**
+- ✅ Structured metadata (specs, configs, JSON fields) - **40-60% savings**
+- ✅ Database query results in RAG context - **60-80% savings**
+- ✅ API documentation with code examples - **30-40% savings**
+
+**Not ideal for:**
+- ❌ Plain text chunks only - **5-15% savings** (not worth overhead)
+
+**Cost Impact:** For 100K RAG queries with 10KB context each, save ~$25/month (GPT-4o pricing)
 
 ## Testing
 

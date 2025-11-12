@@ -291,4 +291,4 @@ prunize(input: any, options?: {
 
 ## License
 
-MIT © 2025 Anwarul Haqi
+MIT © 2025 qirkpetrucci

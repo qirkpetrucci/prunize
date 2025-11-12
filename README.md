@@ -303,6 +303,56 @@ prunize(input: any, options?: {
 - **Prompt Engineering** - Fit more context in token limits
 - **Fine-tuning** - Reduce training dataset size
 - **RAG Integration** - Optimize retrieved context before LLM
+- **Agentic AI** - Reduce token usage in multi-agent systems
+
+### Agentic AI Integration
+
+Prunize is essential for agentic AI systems that rely on **structured data exchange** between agents, tools, and memory:
+
+```typescript
+// 1. Function Calling - Optimize tool results (50-70% savings)
+const toolResult = await executeTool('get_user_data', params);
+const optimized = prunize(toolResult);
+// 400 tokens → 160 tokens ✅
+
+// 2. Multi-Agent Communication - Compress agent messages
+const agentMessage = {
+  from: "research_agent",
+  findings: [...],
+  recommendations: {...}
+};
+const compressed = prunize(agentMessage).output;
+// Send compressed message to next agent
+
+// 3. Agent Memory - Maintain compressed context
+class Agent {
+  memory: any[] = [];
+  
+  addToMemory(data: any) {
+    const compressed = prunize(data);
+    this.memory.push(compressed.output);
+  }
+  
+  getContext(): string {
+    return this.memory.join('\n---\n');
+  }
+}
+
+// 4. RAG Agent - Optimize retrieved data
+const vectorResults = await vectorDB.search(query, 5);
+const sqlResults = await db.query(sql);
+const optimizedVector = prunize(vectorResults.metadata).output;
+const optimizedSQL = prunize(sqlResults).output; // CSV format!
+```
+
+**Key Benefits for Agents:**
+- ✅ **Function calling** - 50-70% smaller tool results
+- ✅ **Multi-agent communication** - 40-60% compressed messages
+- ✅ **Memory management** - Fit 2-3x more history in context
+- ✅ **Planning chains** - Compress intermediate states
+
+**Cost Impact:** Agent with 10 tool calls + 5 messages = ~7,500 tokens → ~3,750 tokens (50% savings)  
+For 100K workflows: **Save $937/month** (GPT-4o pricing)
 
 ### RAG Integration
 

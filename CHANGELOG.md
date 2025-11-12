@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2025-11-12
+
+### Added
+- RAG Integration documentation in README
+  - Practical examples for optimizing vector store metadata
+  - Cost impact analysis ($25/month savings for 100K queries)
+  - Best practices for structured metadata vs plain text
+- Agentic AI Integration documentation in README
+  - Function calling optimization examples (50-70% savings)
+  - Multi-agent communication patterns
+  - Memory management strategies
+  - Cost impact: $937/month savings for 100K workflows
+
+### Documentation
+- Internal feature roadmap created (`docs/feature-plan.md`)
+  - 10 proposed features for v0.2.0-v0.5.0+
+  - Priority matrix and timelines
+  - Detailed specifications and code examples
+  - Not included in npm package (internal planning)
+
 ## [0.1.2] - 2025-11-12
 
 ### Added

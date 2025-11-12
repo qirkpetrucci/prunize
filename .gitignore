@@ -66,3 +66,5 @@ showcase-*.cjs
 /docs/
 /README.long.md
 /*.cjs
+
+.venv/

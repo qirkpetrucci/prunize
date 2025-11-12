@@ -1,6 +1,6 @@
 {
   "name": "prunize",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Intelligent optimizer that detects the best prompt format to reduce LLM token usage",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -41,7 +41,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/anwarulhaqi2020/prunize"
+    "url": "https://github.com/qirkpetrucci/prunize"
   },
   "devDependencies": {
     "tsup": "^8.5.0",

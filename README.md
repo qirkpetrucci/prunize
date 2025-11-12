@@ -2,7 +2,7 @@
 
 **Intelligent prompt optimizer that reduces LLM token usage by 30-83%.**
 
-Auto-detects input types (JSON, YAML, XML, HTML, text) and selects the optimal output format to minimize tokens.
+Auto-detects input types (JSON, YAML, XML, HTML, text) and selects the optimal output format to minimize tokens. The TOON format converter is inspired by the [TOON specification](https://github.com/toon-format/toon), a compact object notation designed for token efficiency.
 
 ## Why Prunize?
 
@@ -10,6 +10,20 @@ Auto-detects input types (JSON, YAML, XML, HTML, text) and selects the optimal o
 - 📊 **Fit more context** - Include more data within token limits
 - 🚀 **Speed up** - Fewer tokens = faster processing
 - 🤖 **Auto-decision** - Intelligently optimizes snippets (~0.16ms overhead)
+
+## 🚀 Features
+
+- ✅ **Smart Auto-detection** - Recognizes JSON, YAML, XML, HTML, and plain text
+- 📊 **Multiple Output Formats** - CSV, TOON, Compact, Strip
+- 🎯 **Intelligent Format Selection** - Chooses best format based on data structure
+- 🤖 **Auto-Decision Mode** - Intelligently decides when to optimize snippets (~0.16ms overhead)
+- 🔍 **Snippet Optimization** - Detects and optimizes embedded code in documents
+- 💰 **30-83% Token Savings** - Proven reduction across various data types
+- 📈 **Detailed Analytics** - Confidence scores, before/after metrics, auto-decision stats
+- 🔄 **Circular Reference Detection** - Handles complex object graphs
+- 📦 **Zero Dependencies** - Lightweight, no external packages
+- 🎨 **Preserves Structure** - Output remains readable and parseable
+- ⚡ **Blazing Fast** - Average 0.31ms per request
 
 ## Installation
 

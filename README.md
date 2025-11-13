@@ -53,21 +53,6 @@ console.log(result.output);
 console.log(result.tokens.savings); // "45.2%"
 ```
 
-## Supported Input Formats
-
-Prunize automatically detects and optimizes various input formats:
-
-| Input Type | Token Efficiency | Cost Savings | Best Output Format |
-|------------|------------------|--------------|-------------------|
-| **JSON** (uniform arrays) | 60-83% | $1.50-$2.08 per 1M tokens | CSV |
-| **JSON** (nested objects) | 40-60% | $1.00-$1.50 per 1M tokens | TOON |
-| **JSON** (any structure) | 15-30% | $0.38-$0.75 per 1M tokens | Compact |
-| **YAML** | 40-65% | $1.00-$1.63 per 1M tokens | CSV/TOON |
-| **XML** | 35-55% | $0.88-$1.38 per 1M tokens | TOON/Compact |
-| **HTML** | 30-50% | $0.75-$1.25 per 1M tokens | Strip/Compact |
-| **Plain Text** | 5-15% | $0.13-$0.38 per 1M tokens | Strip |
-
-*Cost savings based on GPT-4o pricing ($2.50/1M input tokens)*
 
 ## Advanced Usage
 
@@ -277,15 +262,6 @@ const result = prunize(data, { verbose: true });
 // [prunize] Tokens: 245 → 156 (36.3% savings)
 ```
 
-## Performance
-
-| Input Type | Before | After | Savings | Format |
-|------------|--------|-------|---------|--------|
-| Simple JSON | 38 | 31 | 18.4% | TOON |
-| Nested JSON | 150 | 91 | 39.3% | TOON |
-| Large Array | 2450 | 960 | 60.8% | CSV |
-| API Response | 161 | 26 | 83.9% | TOON |
-| PRD (auto) | 1965 | 1739 | 11.5% | Strip + Auto |
 
 **Auto-decision overhead:** ~0.16ms (7.5% of execution time)
 
@@ -431,6 +407,24 @@ const prompt = `Context:\n${optimizedContext}\n\nQuestion: ${query}`;
 **Cost Impact:** For 100K RAG queries with 10KB context each, save ~$25/month (GPT-4o pricing)
 
 ## Testing
+
+### Golden Test Results
+
+Validated with real-world datasets in `test-data/`:
+
+| Dataset | Size | Format | Tokens Before | Tokens After | Savings | Test Status |
+|---------|------|--------|---------------|--------------|---------|-------------|
+| **OpenAPI Pet Store** | 25KB | strip | 7,074 | 6,339 | **10.4%** | ✅ PASS |
+| **Agent Multi-Tool Trace** | 19KB | strip | 5,261 | 4,909 | **6.7%** | ✅ PASS |
+| **PRD with Code Snippets** | 30KB | strip | 7,795 | 7,319 | **6.1%** | ✅ PASS |
+| **Large Nested JSON** | 21KB | strip | 5,968 | 5,397 | **9.6%** | ✅ PASS |
+| **HTML E-commerce Page** | 32KB | strip | 288 | 287 | **0.3%** | ✅ PASS |
+
+Run golden tests:
+```bash
+npm run test:golden         # Run validation tests (20 tests)
+npm run test-data:generate  # Regenerate expected outputs
+```
 
 ### Real-World Examples
 

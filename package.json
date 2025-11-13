@@ -22,6 +22,8 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
+    "test:golden": "vitest __tests__/golden.test.ts",
+    "test-data:generate": "cd test-data && node generate-expected.cjs",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "keywords": [

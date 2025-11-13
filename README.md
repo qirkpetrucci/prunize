@@ -468,7 +468,7 @@ For contributors running unit tests during development:
 # Install dependencies first
 npm install
 
-# Run all unit tests (44 tests)
+# Run all unit tests (61 tests)
 npm test
 
 # Watch mode (auto-rerun on file changes)
@@ -479,10 +479,12 @@ npm run test:coverage
 ```
 
 **Test Structure:**
-- **Unit Tests** (`__tests__/`) - 44 tests covering all core functionality
+- **Unit Tests** (`__tests__/`) - 61 tests covering all core functionality
   - `detector.test.ts` - Format detection logic (14 tests)
   - `formatters.test.ts` - Conversion functions (17 tests)
   - `integration.test.ts` - End-to-end scenarios (13 tests)
+  - `golden.test.ts` - Real-world dataset validation (17 tests)
+- **Golden Datasets** (`test-data/`) - Real-world inputs for regression testing (OpenAPI specs, agent traces, RAG metadata, file trees, PRDs with code snippets)
 - **Examples** (`examples/`) - Integration tests using published npm package
   - `large-text.ts` - Real-world data scenarios
 

@@ -1,0 +1,15 @@
+{
+  "format": "strip",
+  "tokens": {
+    "before": 3856,
+    "after": 2791,
+    "savings": "27.6%"
+  },
+  "confidence": 0.85,
+  "generatedAt": "2025-11-13T03:46:41.731Z",
+  "inputFile": "documents/large-prd-with-snippets.md",
+  "options": {
+    "name": "auto-enabled",
+    "optimizeSnippets": true
+  }
+}

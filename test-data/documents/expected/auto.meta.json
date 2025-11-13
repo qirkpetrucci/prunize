@@ -1,0 +1,25 @@
+{
+  "format": "strip",
+  "tokens": {
+    "before": 3856,
+    "after": 2791,
+    "savings": "27.6%"
+  },
+  "confidence": 0.85,
+  "autoDecision": {
+    "enabled": true,
+    "reason": "5 optimizable snippets (83.6% of content)",
+    "decisionTimeMs": 0.0797499999999971,
+    "stats": {
+      "totalSnippets": 11,
+      "optimizableSnippets": 5,
+      "snippetRatio": 83.6
+    }
+  },
+  "generatedAt": "2025-11-13T03:46:41.730Z",
+  "inputFile": "documents/large-prd-with-snippets.md",
+  "options": {
+    "name": "auto",
+    "optimizeSnippets": "auto"
+  }
+}

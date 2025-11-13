@@ -1,0 +1,332 @@
+{
+  "name": "ecommerce-platform",
+  "type": "directory",
+  "size": 0,
+  "path": "/",
+  "children": [
+    {
+      "name": "src",
+      "type": "directory",
+      "children": [
+        {
+          "name": "api",
+          "type": "directory",
+          "children": [
+            {
+              "name": "auth",
+              "type": "directory",
+              "children": [
+                { "name": "login.ts", "type": "file", "size": 3456 },
+                { "name": "logout.ts", "type": "file", "size": 1234 },
+                { "name": "register.ts", "type": "file", "size": 4567 },
+                { "name": "refresh-token.ts", "type": "file", "size": 2345 },
+                { "name": "verify-email.ts", "type": "file", "size": 1890 },
+                { "name": "reset-password.ts", "type": "file", "size": 3210 }
+              ]
+            },
+            {
+              "name": "products",
+              "type": "directory",
+              "children": [
+                { "name": "list.ts", "type": "file", "size": 5432 },
+                { "name": "get-by-id.ts", "type": "file", "size": 2876 },
+                { "name": "create.ts", "type": "file", "size": 6543 },
+                { "name": "update.ts", "type": "file", "size": 5678 },
+                { "name": "delete.ts", "type": "file", "size": 2109 },
+                { "name": "search.ts", "type": "file", "size": 7890 },
+                { "name": "get-reviews.ts", "type": "file", "size": 3456 }
+              ]
+            },
+            {
+              "name": "orders",
+              "type": "directory",
+              "children": [
+                { "name": "create.ts", "type": "file", "size": 8901 },
+                { "name": "list.ts", "type": "file", "size": 4567 },
+                { "name": "get-by-id.ts", "type": "file", "size": 3210 },
+                { "name": "update-status.ts", "type": "file", "size": 4321 },
+                { "name": "cancel.ts", "type": "file", "size": 2987 },
+                { "name": "get-invoice.ts", "type": "file", "size": 3654 }
+              ]
+            },
+            {
+              "name": "payments",
+              "type": "directory",
+              "children": [
+                { "name": "process.ts", "type": "file", "size": 9876 },
+                { "name": "refund.ts", "type": "file", "size": 5432 },
+                { "name": "webhook.ts", "type": "file", "size": 6789 },
+                { "name": "verify.ts", "type": "file", "size": 3456 }
+              ]
+            },
+            {
+              "name": "users",
+              "type": "directory",
+              "children": [
+                { "name": "profile.ts", "type": "file", "size": 4567 },
+                { "name": "update-profile.ts", "type": "file", "size": 5678 },
+                { "name": "get-orders.ts", "type": "file", "size": 3210 },
+                { "name": "get-wishlist.ts", "type": "file", "size": 2345 },
+                { "name": "add-address.ts", "type": "file", "size": 3456 },
+                { "name": "delete-address.ts", "type": "file", "size": 1890 }
+              ]
+            },
+            {
+              "name": "cart",
+              "type": "directory",
+              "children": [
+                { "name": "get.ts", "type": "file", "size": 2345 },
+                { "name": "add-item.ts", "type": "file", "size": 4567 },
+                { "name": "remove-item.ts", "type": "file", "size": 2876 },
+                { "name": "update-quantity.ts", "type": "file", "size": 3210 },
+                { "name": "clear.ts", "type": "file", "size": 1456 }
+              ]
+            },
+            {
+              "name": "analytics",
+              "type": "directory",
+              "children": [
+                { "name": "dashboard.ts", "type": "file", "size": 8901 },
+                { "name": "sales-report.ts", "type": "file", "size": 7654 },
+                { "name": "user-metrics.ts", "type": "file", "size": 6543 },
+                { "name": "product-performance.ts", "type": "file", "size": 5432 }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "models",
+          "type": "directory",
+          "children": [
+            { "name": "User.ts", "type": "file", "size": 5678 },
+            { "name": "Product.ts", "type": "file", "size": 6789 },
+            { "name": "Order.ts", "type": "file", "size": 7890 },
+            { "name": "OrderItem.ts", "type": "file", "size": 3456 },
+            { "name": "Payment.ts", "type": "file", "size": 4567 },
+            { "name": "Address.ts", "type": "file", "size": 2345 },
+            { "name": "Cart.ts", "type": "file", "size": 3210 },
+            { "name": "CartItem.ts", "type": "file", "size": 2109 },
+            { "name": "Review.ts", "type": "file", "size": 3456 },
+            { "name": "Category.ts", "type": "file", "size": 2876 }
+          ]
+        },
+        {
+          "name": "services",
+          "type": "directory",
+          "children": [
+            { "name": "AuthService.ts", "type": "file", "size": 8901 },
+            { "name": "ProductService.ts", "type": "file", "size": 10234 },
+            { "name": "OrderService.ts", "type": "file", "size": 11456 },
+            { "name": "PaymentService.ts", "type": "file", "size": 9876 },
+            { "name": "EmailService.ts", "type": "file", "size": 5432 },
+            { "name": "NotificationService.ts", "type": "file", "size": 6543 },
+            { "name": "SearchService.ts", "type": "file", "size": 7654 },
+            { "name": "CacheService.ts", "type": "file", "size": 4321 },
+            { "name": "StorageService.ts", "type": "file", "size": 5678 }
+          ]
+        },
+        {
+          "name": "middleware",
+          "type": "directory",
+          "children": [
+            { "name": "auth.ts", "type": "file", "size": 4567 },
+            { "name": "error-handler.ts", "type": "file", "size": 3456 },
+            { "name": "rate-limiter.ts", "type": "file", "size": 2876 },
+            { "name": "validator.ts", "type": "file", "size": 5432 },
+            { "name": "logger.ts", "type": "file", "size": 3210 },
+            { "name": "cors.ts", "type": "file", "size": 1890 }
+          ]
+        },
+        {
+          "name": "utils",
+          "type": "directory",
+          "children": [
+            { "name": "jwt.ts", "type": "file", "size": 3456 },
+            { "name": "bcrypt.ts", "type": "file", "size": 2109 },
+            { "name": "email-validator.ts", "type": "file", "size": 1890 },
+            { "name": "date-formatter.ts", "type": "file", "size": 2345 },
+            { "name": "price-calculator.ts", "type": "file", "size": 4321 },
+            { "name": "image-processor.ts", "type": "file", "size": 5678 },
+            { "name": "pagination.ts", "type": "file", "size": 2876 },
+            { "name": "slug-generator.ts", "type": "file", "size": 1456 }
+          ]
+        },
+        {
+          "name": "config",
+          "type": "directory",
+          "children": [
+            { "name": "database.ts", "type": "file", "size": 3456 },
+            { "name": "redis.ts", "type": "file", "size": 2109 },
+            { "name": "email.ts", "type": "file", "size": 1890 },
+            { "name": "storage.ts", "type": "file", "size": 2345 },
+            { "name": "payment.ts", "type": "file", "size": 3210 },
+            { "name": "app.ts", "type": "file", "size": 4567 }
+          ]
+        },
+        {
+          "name": "types",
+          "type": "directory",
+          "children": [
+            { "name": "express.d.ts", "type": "file", "size": 2345 },
+            { "name": "api.ts", "type": "file", "size": 8901 },
+            { "name": "models.ts", "type": "file", "size": 6789 },
+            { "name": "services.ts", "type": "file", "size": 5432 },
+            { "name": "enums.ts", "type": "file", "size": 3210 }
+          ]
+        },
+        { "name": "app.ts", "type": "file", "size": 5678 },
+        { "name": "server.ts", "type": "file", "size": 3456 },
+        { "name": "database.ts", "type": "file", "size": 4321 }
+      ]
+    },
+    {
+      "name": "tests",
+      "type": "directory",
+      "children": [
+        {
+          "name": "unit",
+          "type": "directory",
+          "children": [
+            {
+              "name": "services",
+              "type": "directory",
+              "children": [
+                { "name": "AuthService.test.ts", "type": "file", "size": 7890 },
+                { "name": "ProductService.test.ts", "type": "file", "size": 9876 },
+                { "name": "OrderService.test.ts", "type": "file", "size": 10234 },
+                { "name": "PaymentService.test.ts", "type": "file", "size": 8901 }
+              ]
+            },
+            {
+              "name": "utils",
+              "type": "directory",
+              "children": [
+                { "name": "jwt.test.ts", "type": "file", "size": 3456 },
+                { "name": "bcrypt.test.ts", "type": "file", "size": 2876 },
+                { "name": "validator.test.ts", "type": "file", "size": 4567 }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "integration",
+          "type": "directory",
+          "children": [
+            { "name": "auth.test.ts", "type": "file", "size": 8901 },
+            { "name": "products.test.ts", "type": "file", "size": 10234 },
+            { "name": "orders.test.ts", "type": "file", "size": 11456 },
+            { "name": "payments.test.ts", "type": "file", "size": 9876 }
+          ]
+        },
+        {
+          "name": "e2e",
+          "type": "directory",
+          "children": [
+            { "name": "checkout-flow.test.ts", "type": "file", "size": 12345 },
+            { "name": "user-registration.test.ts", "type": "file", "size": 8901 },
+            { "name": "product-search.test.ts", "type": "file", "size": 7654 }
+          ]
+        },
+        { "name": "setup.ts", "type": "file", "size": 2345 },
+        { "name": "helpers.ts", "type": "file", "size": 3456 }
+      ]
+    },
+    {
+      "name": "prisma",
+      "type": "directory",
+      "children": [
+        { "name": "schema.prisma", "type": "file", "size": 15678 },
+        {
+          "name": "migrations",
+          "type": "directory",
+          "children": [
+            {
+              "name": "20241001_init",
+              "type": "directory",
+              "children": [
+                { "name": "migration.sql", "type": "file", "size": 8901 }
+              ]
+            },
+            {
+              "name": "20241015_add_reviews",
+              "type": "directory",
+              "children": [
+                { "name": "migration.sql", "type": "file", "size": 3456 }
+              ]
+            },
+            {
+              "name": "20241101_add_analytics",
+              "type": "directory",
+              "children": [
+                { "name": "migration.sql", "type": "file", "size": 5432 }
+              ]
+            }
+          ]
+        },
+        { "name": "seed.ts", "type": "file", "size": 6789 }
+      ]
+    },
+    {
+      "name": "docs",
+      "type": "directory",
+      "children": [
+        { "name": "API.md", "type": "file", "size": 23456 },
+        { "name": "ARCHITECTURE.md", "type": "file", "size": 18901 },
+        { "name": "DEPLOYMENT.md", "type": "file", "size": 12345 },
+        { "name": "CONTRIBUTING.md", "type": "file", "size": 8901 },
+        {
+          "name": "api",
+          "type": "directory",
+          "children": [
+            { "name": "authentication.md", "type": "file", "size": 7654 },
+            { "name": "products.md", "type": "file", "size": 9876 },
+            { "name": "orders.md", "type": "file", "size": 10234 },
+            { "name": "payments.md", "type": "file", "size": 8901 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "scripts",
+      "type": "directory",
+      "children": [
+        { "name": "migrate.sh", "type": "file", "size": 1234 },
+        { "name": "seed-db.sh", "type": "file", "size": 987 },
+        { "name": "backup.sh", "type": "file", "size": 1567 },
+        { "name": "deploy.sh", "type": "file", "size": 2345 }
+      ]
+    },
+    {
+      "name": "public",
+      "type": "directory",
+      "children": [
+        {
+          "name": "images",
+          "type": "directory",
+          "children": [
+            { "name": "logo.png", "type": "file", "size": 15678 },
+            { "name": "banner.jpg", "type": "file", "size": 45678 }
+          ]
+        },
+        {
+          "name": "assets",
+          "type": "directory",
+          "children": [
+            { "name": "styles.css", "type": "file", "size": 8901 },
+            { "name": "main.js", "type": "file", "size": 12345 }
+          ]
+        }
+      ]
+    },
+    { "name": "package.json", "type": "file", "size": 3456 },
+    { "name": "tsconfig.json", "type": "file", "size": 1234 },
+    { "name": ".env.example", "type": "file", "size": 987 },
+    { "name": ".gitignore", "type": "file", "size": 456 },
+    { "name": "README.md", "type": "file", "size": 8901 },
+    { "name": "docker-compose.yml", "type": "file", "size": 4567 },
+    { "name": "Dockerfile", "type": "file", "size": 2345 }
+  ],
+  "total_files": 147,
+  "total_directories": 23,
+  "total_size_bytes": 867543
+}

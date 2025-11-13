@@ -47,6 +47,7 @@
     "url": "git+https://github.com/qirkpetrucci/prunize.git"
   },
   "devDependencies": {
+    "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.0.8",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",

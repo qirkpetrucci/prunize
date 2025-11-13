@@ -1,0 +1,15 @@
+{
+  "format": "strip",
+  "tokens": {
+    "before": 6151,
+    "after": 8106,
+    "savings": "-31.8%"
+  },
+  "confidence": 0.85,
+  "generatedAt": "2025-11-13T03:40:07.530Z",
+  "inputFile": "openapi/large-api-spec.json",
+  "options": {
+    "format": "compact",
+    "name": "compact"
+  }
+}

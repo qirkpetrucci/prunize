@@ -1,0 +1,15 @@
+{
+  "format": "strip",
+  "tokens": {
+    "before": 1803,
+    "after": 1923,
+    "savings": "-6.7%"
+  },
+  "confidence": 0.85,
+  "generatedAt": "2025-11-13T03:40:07.533Z",
+  "inputFile": "rag-metadata/mixed-retrieval.json",
+  "options": {
+    "format": "csv",
+    "name": "csv"
+  }
+}

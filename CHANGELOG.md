@@ -5,7 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
 
 ## [0.1.4] - 2025-11-13
 
@@ -21,6 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Examples of customizing `maxInputSize`
   - Best practices and recommendations
   - Error handling examples
+- **Golden dataset infrastructure** - Real-world test datasets for regression testing
+  - 5 datasets: OpenAPI specs (49KB), agent traces (9KB), RAG metadata (9KB), file trees (13KB), PRD with code snippets (15KB)
+  - 17 new golden tests in `__tests__/golden.test.ts` (total: 61 tests)
+  - Test data loader utility (`test-data/loader.ts`)
+  - Automated expected output generator (`test-data/generate-expected-outputs.cjs`)
+  - Performance validation (<50ms per dataset) and regression prevention
 
 ### Improved
 - **Error messages** - More descriptive and actionable
@@ -37,6 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Clarifies when to use each tool
 - Enhanced API Reference with `maxDepth` option
 - Added Input Size Limits section with examples
+- Added `test-data/README.md` documenting golden dataset structure
+- Updated test count in README (44 → 61 tests)
 
 ## [0.1.3] - 2025-11-12
 

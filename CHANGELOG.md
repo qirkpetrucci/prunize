@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2025-11-13
+
+### Added
+- **Depth protection** - New `maxDepth` option (default: 100 levels)
+  - Prevents stack overflow on deeply nested objects
+  - Clear error message when depth limit exceeded
+  - Set to 0 to disable depth checking
+- **Size warnings** - Warns when processing large inputs (>100KB)
+  - Helpful guidance to consider chunking data
+  - Only shown in verbose mode
+- **Input size limit documentation** - Added comprehensive section in README
+  - Examples of customizing `maxInputSize`
+  - Best practices and recommendations
+  - Error handling examples
+
+### Improved
+- **Error messages** - More descriptive and actionable
+  - Input size errors now suggest increasing `maxInputSize` or chunking
+  - Depth errors explain the issue and suggest solutions
+  - All errors include relevant context (size, depth, etc.)
+- **Circular reference detection** - Now respects `maxDepth` limit
+  - Prevents infinite recursion on pathological inputs
+  - Better performance on deeply nested structures
+
+### Documentation
+- Added comparison paragraph with prompt-optimizer library
+  - Explains structural vs semantic compression approaches
+  - Clarifies when to use each tool
+- Enhanced API Reference with `maxDepth` option
+- Added Input Size Limits section with examples
+
 ## [0.1.3] - 2025-11-12
 
 ### Added

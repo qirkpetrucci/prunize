@@ -4,26 +4,26 @@
 
 Auto-detects input types (JSON, YAML, XML, HTML, text) and selects the optimal output format to minimize tokens. The TOON format converter is inspired by the [TOON specification](https://github.com/toon-format/toon), a compact object notation designed for token efficiency.
 
+**How is this different from prompt-optimizer?** Prunize focuses on **structure-aware compression** for structured data (JSON, YAML, XML), while prompt-optimizer uses NLP techniques for plain text. Prunize is **lossless** (preserves all information), ideal for API responses, database results, and agent communication. Use prunize for structured data, prompt-optimizer for natural language text, or combine both for mixed content documents.
+
 ## Why Prunize?
 
-- 💰 **Save costs** - Reduce API bills by 30-83%
-- 📊 **Fit more context** - Include more data within token limits
-- 🚀 **Speed up** - Fewer tokens = faster processing
-- 🤖 **Auto-decision** - Intelligently optimizes snippets (~0.16ms overhead)
+- **Save costs** - Reduce API bills by 30-83%
+- **Fit more context** - Include more data within token limits
+- **Speed up** - Fewer tokens = faster processing
+- **Auto-decision** - Intelligently optimizes snippets (~0.16ms overhead)
 
-## 🚀 Features
+## Features
 
-- ✅ **Smart Auto-detection** - Recognizes JSON, YAML, XML, HTML, and plain text
-- 📊 **Multiple Output Formats** - CSV, TOON, Compact, Strip
-- 🎯 **Intelligent Format Selection** - Chooses best format based on data structure
-- 🤖 **Auto-Decision Mode** - Intelligently decides when to optimize snippets (~0.16ms overhead)
-- 🔍 **Snippet Optimization** - Detects and optimizes embedded code in documents
-- 💰 **30-83% Token Savings** - Proven reduction across various data types
-- 📈 **Detailed Analytics** - Confidence scores, before/after metrics, auto-decision stats
-- 🔄 **Circular Reference Detection** - Handles complex object graphs
-- 📦 **Zero Dependencies** - Lightweight, no external packages
-- 🎨 **Preserves Structure** - Output remains readable and parseable
-- ⚡ **Blazing Fast** - Average 0.31ms per request
+- **Smart Auto-detection** - Recognizes JSON, YAML, XML, HTML, and plain text
+- **Multiple Output Formats** - CSV, TOON, Compact, Strip
+- **Auto-Decision Mode** - Intelligently decides when to optimize snippets
+- **Snippet Optimization** - Detects and optimizes embedded code in documents
+- **30-83% Token Savings** - Proven reduction across various data types
+- **Lossless Compression** - Preserves all data, no information loss
+- **Zero Dependencies** - Lightweight, no external packages
+- **Blazing Fast** - Average 0.31ms per request
+- **Input Protection** - Size limits and depth limits prevent hangs
 
 ## Installation
 
@@ -86,10 +86,10 @@ const result = prunize(data);
 ```
 
 **Auto-Decision Benefits:**
-- ✅ **Best optimization** - Automatically enables snippet optimization when beneficial
-- ✅ **Smart** - Analyzes content to decide (>15% snippets, ≤20 blocks, optimizable types)
-- ✅ **Fast** - Only ~0.16ms overhead (7.5% of execution time)
-- ✅ **Safe** - Skips optimization when it won't help
+- **Best optimization** - Automatically enables snippet optimization when beneficial
+- **Smart** - Analyzes content to decide (>15% snippets, ≤20 blocks, optimizable types)
+- **Fast** - Only ~0.16ms overhead (7.5% of execution time)
+- **Safe** - Skips optimization when it won't help
 
 **When Auto-Decision Enables Optimization:**
 - Documents with embedded code blocks (JSON, YAML, XML, HTML)
@@ -234,6 +234,40 @@ prunize(data, { format: 'compact' });
 prunize(data, { format: 'strip' });
 ```
 
+### Input Size Limits
+
+By default, prunize limits input size to **100KB** to prevent performance issues. You can customize or disable this limit:
+
+```typescript
+// Default: 100KB limit
+const result = prunize(data);
+
+// Custom limit: 500KB
+const result = prunize(largeData, { maxInputSize: 500 * 1024 });
+
+// Disable limit (use with caution!)
+const result = prunize(veryLargeData, { maxInputSize: 0 });
+
+// Error handling
+try {
+  const result = prunize(hugeData);
+} catch (error) {
+  console.error(error.message);
+  // "Input size (250.00 KB) exceeds maximum allowed size (100 KB)"
+}
+```
+
+**Recommendations:**
+- **Keep default (100KB)** for most use cases
+- **Increase limit** for known large inputs (PRDs, specs)
+- **Disable limit** only if you trust the input source
+- **Monitor performance** with large inputs (>500KB)
+
+**Why the limit?**
+- Prevents accidental hang on pathological inputs
+- Protects against memory exhaustion
+- Encourages chunking for very large datasets
+
 ### Verbose Logging
 
 ```typescript
@@ -271,6 +305,8 @@ Based on **GPT-4o pricing** ($2.50/1M input tokens):
 prunize(input: any, options?: {
   format?: 'csv' | 'toon' | 'compact' | 'strip',
   optimizeSnippets?: boolean | 'auto',
+  maxInputSize?: number,  // Default: 100KB (102400 bytes), set 0 to disable
+  maxDepth?: number,      // Default: 100 levels, set 0 to disable
   verbose?: boolean
 }): {
   format: string,
@@ -285,6 +321,16 @@ prunize(input: any, options?: {
   }
 }
 ```
+
+**Options:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `format` | `'csv' \| 'toon' \| 'compact' \| 'strip'` | Auto-detect | Force specific output format |
+| `optimizeSnippets` | `boolean \| 'auto'` | `'auto'` | Enable snippet optimization for mixed content |
+| `maxInputSize` | `number` | `102400` (100KB) | Maximum input size in bytes. Set to `0` to disable limit |
+| `maxDepth` | `number` | `100` | Maximum nesting depth. Prevents stack overflow. Set to `0` to disable |
+| `verbose` | `boolean` | `false` | Enable detailed logging |
 
 ## How It Works
 
@@ -313,7 +359,7 @@ Prunize is essential for agentic AI systems that rely on **structured data excha
 // 1. Function Calling - Optimize tool results (50-70% savings)
 const toolResult = await executeTool('get_user_data', params);
 const optimized = prunize(toolResult);
-// 400 tokens → 160 tokens ✅
+// 400 tokens → 160 tokens
 
 // 2. Multi-Agent Communication - Compress agent messages
 const agentMessage = {
@@ -346,10 +392,10 @@ const optimizedSQL = prunize(sqlResults).output; // CSV format!
 ```
 
 **Key Benefits for Agents:**
-- ✅ **Function calling** - 50-70% smaller tool results
-- ✅ **Multi-agent communication** - 40-60% compressed messages
-- ✅ **Memory management** - Fit 2-3x more history in context
-- ✅ **Planning chains** - Compress intermediate states
+- **Function calling** - 50-70% smaller tool results
+- **Multi-agent communication** - 40-60% compressed messages
+- **Memory management** - Fit 2-3x more history in context
+- **Planning chains** - Compress intermediate states
 
 **Cost Impact:** Agent with 10 tool calls + 5 messages = ~7,500 tokens → ~3,750 tokens (50% savings)  
 For 100K workflows: **Save $937/month** (GPT-4o pricing)
@@ -375,12 +421,12 @@ const prompt = `Context:\n${optimizedContext}\n\nQuestion: ${query}`;
 ```
 
 **Best for:**
-- ✅ Structured metadata (specs, configs, JSON fields) - **40-60% savings**
-- ✅ Database query results in RAG context - **60-80% savings**
-- ✅ API documentation with code examples - **30-40% savings**
+- Structured metadata (specs, configs, JSON fields) - **40-60% savings**
+- Database query results in RAG context - **60-80% savings**
+- API documentation with code examples - **30-40% savings**
 
 **Not ideal for:**
-- ❌ Plain text chunks only - **5-15% savings** (not worth overhead)
+- Plain text chunks only - **5-15% savings** (not worth overhead)
 
 **Cost Impact:** For 100K RAG queries with 10KB context each, save ~$25/month (GPT-4o pricing)
 
@@ -403,9 +449,9 @@ npm run examples
 ```
 
 The examples folder demonstrates prunize's token efficiency with:
-- 📄 **Large PRD** - Product Requirements Document (~6KB)
-- ⚙️ **JSON Config** - Complex nested configuration
-- 📊 **Transaction Data** - Array of 100+ records
+- **Large PRD** - Product Requirements Document (~6KB)
+- **JSON Config** - Complex nested configuration
+- **Transaction Data** - Array of 100+ records
 
 **Expected Results:**
 - Overall efficiency: **46.76% token reduction**

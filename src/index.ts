@@ -21,6 +21,12 @@ export interface PrunizeOptions {
    * Set to 0 to disable limit
    */
   maxInputSize?: number;
+  /**
+   * Maximum object nesting depth (default: 100)
+   * Prevents stack overflow on deeply nested objects
+   * Set to 0 to disable depth checking
+   */
+  maxDepth?: number;
 }
 
 export interface PrunizeResult {
@@ -49,17 +55,28 @@ export interface PrunizeResult {
 
 /**
  * Checks if input has circular references
+ * @param obj - Object to check
+ * @param maxDepth - Maximum nesting depth to check (default: 100)
  */
-function hasCircularReference(obj: any): boolean {
+function hasCircularReference(obj: any, maxDepth: number = 100): boolean {
   if (typeof obj !== "object" || obj === null) {
     return false;
   }
 
   const seen = new WeakSet<object>();
   
-  const check = (value: any): boolean => {
+  const check = (value: any, depth: number): boolean => {
     if (typeof value !== "object" || value === null) {
       return false;
+    }
+    
+    // Check depth limit
+    if (maxDepth > 0 && depth > maxDepth) {
+      throw new Error(
+        `Maximum nesting depth (${maxDepth}) exceeded. ` +
+        `Your data has more than ${maxDepth} levels of nesting. ` +
+        `Consider flattening your data structure or increase maxDepth option.`
+      );
     }
     
     if (seen.has(value)) {
@@ -69,13 +86,13 @@ function hasCircularReference(obj: any): boolean {
     seen.add(value);
     
     if (Array.isArray(value)) {
-      return value.some(check);
+      return value.some(item => check(item, depth + 1));
     }
     
-    return Object.values(value).some(check);
+    return Object.values(value).some(val => check(val, depth + 1));
   };
   
-  return check(obj);
+  return check(obj, 0);
 }
 
 /**
@@ -246,6 +263,7 @@ function shouldUseSnippetOptimization(content: string, verbose: boolean): AutoDe
 export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
   // Constants
   const MAX_INPUT_SIZE = options?.maxInputSize !== undefined ? options.maxInputSize : 100 * 1024; // 100KB default
+  const MAX_DEPTH = options?.maxDepth !== undefined ? options.maxDepth : 100; // 100 levels default
   
   // Validate input size
   if (MAX_INPUT_SIZE > 0) {
@@ -256,6 +274,14 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
       throw new Error(
         `Input size (${(inputSize / 1024).toFixed(2)} KB) exceeds maximum allowed size (${(MAX_INPUT_SIZE / 1024).toFixed(0)} KB). ` +
         `Consider chunking your data or increase maxInputSize option.`
+      );
+    }
+    
+    // Warn for large inputs (between 100KB and limit)
+    if (options?.verbose && inputSize > 100 * 1024 && inputSize <= MAX_INPUT_SIZE) {
+      console.warn(
+        `[prunize] Large input detected (${(inputSize / 1024).toFixed(0)} KB). ` +
+        `Processing may be slow. Consider chunking your data for better performance.`
       );
     }
   }
@@ -465,7 +491,7 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
   }
   
   // Check for circular references before processing
-  if (hasCircularReference(input)) {
+  if (hasCircularReference(input, MAX_DEPTH)) {
     if (options?.verbose) {
       console.log(`[prunize] Warning: Circular reference detected in input`);
     }

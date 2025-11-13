@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.1.5] - 2025-11-13
+
+### Fixed
+- **Critical: False positive circular reference detection** - Fixed YAML nested objects incorrectly showing `[Circular]`
+  - Removed duplicate `context.seen.add()` call in `convertObject` function
+  - Circular detection now only happens once in main `convertToTOON` function
+  - Added comprehensive test suite in `__tests__/circular-detection.test.ts` with 5 test cases
+  - Verified fix: nested YAML structures (architecture, testing_strategy, etc.) now convert correctly
+  - Real circular references are still properly detected and rejected
+
+
 ## [0.1.4] - 2025-11-13
 
 ### Added

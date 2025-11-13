@@ -427,15 +427,8 @@ function convertObject(
     }
     // Handle nested objects
     else if (isPlainObject(value)) {
-      // Check for circular reference
-      if (context.seen.has(value)) {
-        if (context.throwOnCircular) {
-          throw new Error("Circular reference detected");
-        }
-        lines.push(`${indentStr}${formattedKey}: [Circular]`);
-        continue;
-      }
-      context.seen.add(value);
+      // Circular reference is already checked in convertToTOON main function
+      // No need to check again here to avoid false positives
       
       const nestedEntries = Object.entries(value);
       if (nestedEntries.length === 0) {

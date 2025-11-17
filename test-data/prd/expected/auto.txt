@@ -868,10 +868,10 @@ integrations:
       client_id: "${SLACK_CLIENT_ID}"
       client_secret: "${SLACK_CLIENT_SECRET}"
       scopes:
-        scopes[3]{channels,chat,users}:
-          read,-,-
-          -,write,-
-          -,-,read
+        scopes[3]:
+          - channels: read
+          - chat: write
+          - users: read
     features:
       message_sync: true
       notification_forward: true

@@ -1,5 +1,6 @@
 import { detectFormat, isYAMLString, isXMLString, isHTMLString } from "./detector.js";
 import { formatAs } from "./formatters.js";
+import { convertToToon } from "./converter.js";
 import { estimateTokens, parseSimpleYAML, parseSimpleXML, parseSimpleHTML, detectSnippets } from "./utils.js";
 
 export interface PrunizeOptions {
@@ -356,7 +357,21 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
               if (parsed !== null) {
                 // Detect best format for this snippet
                 const analysis = detectFormat(parsed);
-                const optimizedSnippet = formatAs(parsed, analysis.format);
+                
+                // Use library-based conversion for safety and spec compliance
+                let optimizedSnippet: string;
+                if (analysis.format === 'toon') {
+                  // Use official @toon-format/toon library via convertToToon
+                  optimizedSnippet = convertToToon(parsed, {
+                    useTOONLibrary: true,
+                    validateBeforeEncode: true,
+                    preprocessData: true,
+                    verbose: false // Avoid nested verbose logs
+                  });
+                } else {
+                  // Use other formatters (CSV, compact, strip)
+                  optimizedSnippet = formatAs(parsed, analysis.format);
+                }
                 
                 // Use optimized snippet directly without wrapper
                 // Adding code fence wrapper would increase tokens
@@ -366,7 +381,7 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
                   const originalLen = segment.content.length;
                   const optimizedLen = optimizedSnippet.length;
                   const saved = ((originalLen - optimizedLen) / originalLen * 100).toFixed(1);
-                  console.log(`  ✓ ${segment.type} → ${analysis.format} (${saved}% smaller)`);
+                  console.log(`  ✓ ${segment.type} → ${analysis.format} (${saved}% smaller, ${analysis.format === 'toon' ? 'library-based' : 'custom'})`);
                 }
               } else {
                 // Couldn't parse, keep original

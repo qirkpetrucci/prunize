@@ -1,8 +1,17 @@
 import { isPlainObject, getArrayKeys } from "./utils.js";
+import { encode as toonEncode } from '@toon-format/toon';
+import { validateForTOON, preprocessForTOON } from './toon-validator.js';
 
 interface ConversionContext {
   seen: WeakSet<object>;
   throwOnCircular: boolean;
+}
+
+export interface ConvertOptions {
+  useTOONLibrary?: boolean; // Use official @toon-format/toon library (default: true)
+  validateBeforeEncode?: boolean; // Validate before encoding (default: true)
+  preprocessData?: boolean; // Preprocess data to fix common issues (default: true)
+  verbose?: boolean; // Log validation warnings (default: false)
 }
 
 /**
@@ -457,7 +466,98 @@ function convertObject(
  * @param throwOnCircular - Whether to throw on circular references (default: false)
  * @returns TOON formatted string
  */
-export function convertToToon(input: any, throwOnCircular: boolean = false): string {
+export function convertToToon(
+  input: any,
+  options: ConvertOptions | boolean = {}
+): string {
+  // Handle legacy boolean parameter for throwOnCircular
+  const opts: ConvertOptions = typeof options === 'boolean'
+    ? { useTOONLibrary: true, validateBeforeEncode: true, preprocessData: true }
+    : {
+        useTOONLibrary: options.useTOONLibrary ?? true,
+        validateBeforeEncode: options.validateBeforeEncode ?? true,
+        preprocessData: options.preprocessData ?? true,
+        verbose: options.verbose ?? false
+      };
+
+  // Use official @toon-format/toon library (default and recommended)
+  if (opts.useTOONLibrary) {
+    try {
+      let dataToEncode = input;
+
+      // Validate before encoding
+      if (opts.validateBeforeEncode) {
+        const validation = validateForTOON(input);
+        
+        if (opts.verbose && validation.warnings.length > 0) {
+          console.warn('[prunize] TOON validation warnings:');
+          validation.warnings.forEach(w => console.warn(`  - ${w}`));
+        }
+
+        if (!validation.valid) {
+          if (opts.verbose) {
+            console.warn('[prunize] TOON validation failed:');
+            validation.errors.forEach(e => console.warn(`  - ${e}`));
+          }
+
+          // If validation fails, try preprocessing
+          if (opts.preprocessData) {
+            if (opts.verbose) {
+              console.log('[prunize] Attempting to preprocess data...');
+            }
+            dataToEncode = preprocessForTOON(input);
+            
+            // Re-validate after preprocessing
+            const revalidation = validateForTOON(dataToEncode);
+            if (!revalidation.valid) {
+              // Still invalid after preprocessing, throw error
+              throw new Error(
+                'Data contains unsupported types for TOON encoding:\n' +
+                revalidation.errors.join('\n')
+              );
+            }
+            
+            if (opts.verbose) {
+              console.log('[prunize] Preprocessing successful');
+            }
+          } else {
+            // No preprocessing, throw error
+            throw new Error(
+              'Data contains unsupported types for TOON encoding:\n' +
+              validation.errors.join('\n')
+            );
+          }
+        }
+      }
+
+      // Preprocess data if enabled (even if validation passed)
+      if (opts.preprocessData && !opts.validateBeforeEncode) {
+        dataToEncode = preprocessForTOON(input);
+      }
+
+      // Use official @toon-format/toon library
+      return toonEncode(dataToEncode, {
+        indent: 2  // Use 2-space indentation for readability
+      });
+
+    } catch (error) {
+      if (opts.verbose) {
+        console.error('[prunize] TOON encoding failed:', error);
+        console.log('[prunize] Falling back to custom converter');
+      }
+      
+      // Fallback to custom converter if library fails
+      const throwOnCircular = typeof options === 'boolean' ? options : false;
+      const context: ConversionContext = {
+        seen: new WeakSet(),
+        throwOnCircular,
+      };
+      return convertToTOON(input, context, 0);
+    }
+  }
+
+  // Use custom converter (legacy mode)
+  const throwOnCircular = typeof options === 'boolean' ? options : false;
   const context: ConversionContext = {
     seen: new WeakSet(),
     throwOnCircular,
@@ -465,3 +565,4 @@ export function convertToToon(input: any, throwOnCircular: boolean = false): str
 
   return convertToTOON(input, context, 0);
 }
+

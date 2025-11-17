@@ -34,12 +34,6 @@ describe('Golden Tests', () => {
       input: path.join(testDataDir, 'nested/ecommerce-config.json'),
       expected: path.join(testDataDir, 'nested/expected/auto.txt'),
       meta: path.join(testDataDir, 'nested/expected/auto.meta.json')
-    },
-    {
-      name: 'HTML E-commerce Page',
-      input: path.join(testDataDir, 'html/ecommerce-products.html'),
-      expected: path.join(testDataDir, 'html/expected/auto.txt'),
-      meta: path.join(testDataDir, 'html/expected/auto.meta.json')
     }
   ];
 

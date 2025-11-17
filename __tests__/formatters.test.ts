@@ -9,10 +9,10 @@ describe('TOON Converter', () => {
     expect(output).toContain('age: 30');
   });
 
-  it('handles null values correctly (spec v2.0 - null → "-")', () => {
+  it('handles null values correctly (@toon-format/toon - null → "null")', () => {
     const input = { name: 'Bob', age: null };
     const output = toTOON(input);
-    expect(output).toContain('age: -');
+    expect(output).toContain('age: null');
   });
 
   it('handles boolean values correctly (lowercase)', () => {
@@ -22,13 +22,13 @@ describe('TOON Converter', () => {
     expect(output).toContain('verified: false');
   });
 
-  it('handles empty arrays correctly (key|)', () => {
+  it('handles empty arrays correctly (@toon-format/toon - [0]:)', () => {
     const input = { items: [] };
     const output = toTOON(input);
-    expect(output).toContain('items|');
+    expect(output).toContain('items[0]:');
   });
 
-  it('handles nested objects', () => {
+  it('handles nested objects (@toon-format/toon - proper nesting)', () => {
     const input = {
       user: {
         name: 'Charlie',
@@ -39,9 +39,10 @@ describe('TOON Converter', () => {
     };
     const output = toTOON(input);
     expect(output).toContain('user:');
-    // Note: Current implementation has a circular reference detection bug
-    // that incorrectly marks nested objects as circular
-    expect(output).toContain('[Circular]');
+    expect(output).toContain('name: Charlie');
+    expect(output).toContain('email: charlie@example.com');
+    // Library handles nesting properly, no false [Circular] positives
+    expect(output).not.toContain('[Circular]');
   });
 
   it('converts array of objects to tabular form', () => {

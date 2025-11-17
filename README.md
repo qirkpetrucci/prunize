@@ -340,6 +340,30 @@ Based on **GPT-4o pricing** ($2.50/1M input tokens) with typical 10% savings:
 
 *Note: Savings vary by data type. Optimized arrays (CSV/TOON) can achieve up to 56% savings, while typical real-world data averages 6-10%.*
 
+### Real-World Savings: Medium SaaS (3M requests/month)
+
+For a **medium-sized SaaS company** processing **3 million requests per month**:
+
+**Structured Data Workloads** (API responses, database results, agent communication):
+- Average: 1,200 tokens per request
+- Cost before: **$9,000/month**
+- Cost after (30% savings): **$6,300/month**
+- **Monthly savings: $2,700**
+- **Annual savings: $32,400**
+
+**Mixed Content Workloads** (PRDs, documentation, RAG context with snippets):
+- Average: 1,200 tokens per request
+- Cost before: **$9,000/month**
+- Cost after (10% savings): **$8,100/month**
+- **Monthly savings: $900**
+- **Annual savings: $10,800**
+
+**Notes:**
+- **Structured data** (arrays, objects, agent messages): 20-56% savings, 30% typical
+- **Mixed content** (text + code snippets): 6-10% savings typical
+- **Text-only** prompts: minimal savings (use prompt-optimizer instead)
+- Agentic systems with lots of tool results achieve higher savings (25-40%)
+
 ## API Reference
 
 ```typescript

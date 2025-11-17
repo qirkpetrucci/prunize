@@ -30,6 +30,30 @@ Auto-detects input types (JSON, YAML, XML, HTML, text) and selects the optimal o
 - **Fast** - ~0.36ms per request (with validation), ~0.21ms without
 - **Input Protection** - Size limits and depth limits prevent hangs
 
+## Important: Test Before Production
+
+**Prunize changes the structure of your prompts.** While it's lossless (preserves all data), different formats may affect LLM behavior:
+
+- **Response Quality** - Some models may interpret TOON/CSV differently than JSON
+- **Prompt Engineering** - Fine-tuned prompts may rely on specific formatting
+- **Model Compatibility** - Test with your specific LLM (GPT-4, Claude, etc.)
+
+**Recommendation:**
+1. **Benchmark first** - Compare LLM responses with/without prunize
+2. **A/B test** - Measure quality metrics (accuracy, relevance, etc.)
+3. **Start conservative** - Use `format: 'compact'` before trying TOON/CSV
+4. **Monitor production** - Track response quality after deployment
+
+**Good use cases:**
+- Structured data (API responses, database results)
+- Agent communication (machine-to-machine)
+- RAG context (code snippets, documentation)
+
+**Use with caution:**
+- Creative writing prompts (format may affect style)
+- Fine-tuned instructions (may break carefully crafted prompts)
+- Chain-of-thought reasoning (structure affects thinking)
+
 ## Installation
 
 ```bash
@@ -58,16 +82,16 @@ console.log(result.output);
 console.log(result.tokens.savings); // "56.6%"
 ```
 
-### 🔒 **Built on Solid Foundation**
+### Built on Solid Foundation
 
 Prunize uses the official [@toon-format/toon](https://github.com/toon-format/toon) library for TOON encoding, ensuring:
 
-- ✅ **100% Spec Compliance** - Standard TOON format guaranteed
-- ✅ **Production Safe** - Comprehensive validation and error handling
-- ✅ **Edge Case Coverage** - Handles special characters, control chars, reserved patterns
-- ✅ **Type Safety** - Validates unsupported types (Function, Symbol, BigInt, etc.)
-- ✅ **Auto-preprocessing** - Converts Date, Map, Set to compatible formats
-- ✅ **Graceful Fallback** - Custom converter if needed
+- **100% Spec Compliance** - Standard TOON format guaranteed
+- **Production Safe** - Comprehensive validation and error handling
+- **Edge Case Coverage** - Handles special characters, control chars, reserved patterns
+- **Type Safety** - Validates unsupported types (Function, Symbol, BigInt, etc.)
+- **Auto-preprocessing** - Converts Date, Map, Set to compatible formats
+- **Graceful Fallback** - Custom converter if needed
 
 **Why it matters**: Custom TOON implementations have ~40% failure rate on real-world data. Using the official library reduces this to <0.1% - **400x safer**!
 
@@ -195,10 +219,6 @@ console.log(optimized.autoDecision.reason);
 
 Force snippet optimization on or off:
 
-### Manual Snippet Optimization
-
-Force snippet optimization on or off:
-
 ```typescript
 // Force enable (always optimize snippets)
 const result = prunize(apiDoc, { optimizeSnippets: true });
@@ -318,7 +338,7 @@ Based on **GPT-4o pricing** ($2.50/1M input tokens) with typical 10% savings:
 | Medium | 10,000 (1,200 tokens) | $30 | $27 | $3 |
 | Enterprise | 100,000 (2,000 tokens) | $500 | $450 | $50 |
 
-*Note: Savings vary by data type. Structured data (CSV/TOON) can achieve up to 83% savings, while typical mixed content averages 6-10%.*
+*Note: Savings vary by data type. Optimized arrays (CSV/TOON) can achieve up to 56% savings, while typical real-world data averages 6-10%.*
 
 ## API Reference
 
@@ -383,10 +403,10 @@ prunize(input: any, options?: {
 Prunize is essential for agentic AI systems that rely on **structured data exchange** between agents, tools, and memory:
 
 ```typescript
-// 1. Function Calling - Optimize tool results (50-70% savings)
+// 1. Function Calling - Optimize tool results
 const toolResult = await executeTool('get_user_data', params);
 const optimized = prunize(toolResult);
-// 400 tokens → 160 tokens
+// Typical savings: 6-10% for structured data
 
 // 2. Multi-Agent Communication - Compress agent messages
 const agentMessage = {
@@ -436,7 +456,7 @@ Prunize works great with Retrieval-Augmented Generation (RAG) systems to optimiz
 const results = await vectorStore.similaritySearch(query, 5);
 
 const optimizedContext = results.map(result => {
-  // Optimize structured metadata (40-60% savings)
+  // Optimize structured metadata
   if (result.metadata && typeof result.metadata === 'object') {
     const optimized = prunize(result.metadata);
     return `${result.pageContent}\nMeta: ${optimized.output}`;
@@ -448,12 +468,12 @@ const prompt = `Context:\n${optimizedContext}\n\nQuestion: ${query}`;
 ```
 
 **Best for:**
-- Structured metadata (specs, configs, JSON fields) - **10-30% savings**
-- Database query results in RAG context - **30-83% savings** (CSV/TOON format)
+- Structured metadata (specs, configs, JSON fields) - **6-10% typical savings**
+- Database query results in RAG context - **up to 56% savings for arrays** (CSV/TOON format)
 - API documentation with code examples - **6-10% savings**
 
 **Not ideal for:**
-- Plain text chunks only - **<5% savings** (not worth overhead)
+- Plain text chunks only - **minimal savings** (not worth overhead)
 
 **Cost Impact:** For 100K RAG queries with 10KB context each, save ~$6-25/month depending on data type (GPT-4o pricing)
 
@@ -465,10 +485,10 @@ Validated with real-world datasets in `test-data/`:
 
 | Dataset | Size | Format | Tokens Before | Tokens After | Savings | Test Status |
 |---------|------|--------|---------------|--------------|---------|-------------|
-| **OpenAPI Pet Store** | 25KB | strip | 7,074 | 6,339 | **10.4%** | ✅ PASS |
-| **Agent Multi-Tool Trace** | 19KB | strip | 5,261 | 4,909 | **6.7%** | ✅ PASS |
-| **PRD with Code Snippets** | 30KB | strip | 7,795 | 7,318 | **6.1%** | ✅ PASS |
-| **Large Nested JSON** | 21KB | strip | 5,968 | 5,397 | **9.6%** | ✅ PASS |
+| **OpenAPI Pet Store** | 25KB | strip | 7,074 | 6,339 | **10.4%** | PASS |
+| **Agent Multi-Tool Trace** | 19KB | strip | 5,261 | 4,909 | **6.7%** | PASS |
+| **PRD with Code Snippets** | 30KB | strip | 7,795 | 7,318 | **6.1%** | PASS |
+| **Large Nested JSON** | 21KB | strip | 5,968 | 5,397 | **9.6%** | PASS |
 
 Run golden tests:
 ```bash
@@ -498,8 +518,8 @@ The examples folder demonstrates prunize's token efficiency with:
 - **Transaction Data** - Array of 100+ records
 
 **Expected Results:**
-- Token reduction varies by data type: **6-83%**
-- Cost savings: **$150-2,075 per 1M requests** (GPT-4o pricing, depends on data structure)
+- Token reduction varies by data type: **6-56%**
+- Cost savings: **$150-1,400 per 1M requests** (GPT-4o pricing, depends on data structure)
 - Performance: **~0.36ms average execution time** (with validation)
 
 The examples folder is completely independent - it downloads and uses the published npm package, making it a real-world usage example.

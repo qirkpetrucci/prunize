@@ -418,7 +418,6 @@ Validated with real-world datasets in `test-data/`:
 | **Agent Multi-Tool Trace** | 19KB | strip | 5,261 | 4,909 | **6.7%** | ✅ PASS |
 | **PRD with Code Snippets** | 30KB | strip | 7,795 | 7,319 | **6.1%** | ✅ PASS |
 | **Large Nested JSON** | 21KB | strip | 5,968 | 5,397 | **9.6%** | ✅ PASS |
-| **HTML E-commerce Page** | 32KB | strip | 288 | 287 | **0.3%** | ✅ PASS |
 
 Run golden tests:
 ```bash

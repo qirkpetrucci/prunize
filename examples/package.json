@@ -5,10 +5,12 @@
   "private": true,
   "scripts": {
     "example:large-text": "ts-node large-text.ts",
+    "compare:toon": "ts-node compare-toon.ts",
     "examples": "npm run example:large-text"
   },
   "dependencies": {
-    "prunize": "^0.1.1"
+    "prunize": "^0.1.5",
+    "@toon-format/toon": "^1.0.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

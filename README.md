@@ -4,6 +4,8 @@
 
 Auto-detects input types (JSON, YAML, XML, HTML, text) and selects the optimal output format to minimize tokens. The TOON format converter uses the official [@toon-format/toon](https://github.com/toon-format/toon) library, a compact object notation designed for token efficiency.
 
+**[Try the Interactive Demo →](https://prunize-demo.netlify.app/)**
+
 **How is this different from prompt-optimizer?** Prunize focuses on **structure-aware compression** for structured data (JSON, YAML, XML), while prompt-optimizer uses NLP techniques for plain text. Prunize is **lossless** (preserves all information), ideal for API responses, database results, and agent communication. Use prunize for structured data, prompt-optimizer for natural language text, or combine both for mixed content documents.
 
 **TOON Format Integration:** Prunize uses the official [@toon-format/toon](https://github.com/toon-format/toon) library (not just inspired by the spec). This ensures 100% spec compliance, production-grade safety, and comprehensive edge case handling - making prunize **400x safer** than custom TOON implementations.

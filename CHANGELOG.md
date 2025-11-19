@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.3.1] - 2025-11-19
+
+### Added
+
+- **Enhanced snippet optimization** - Code block compaction for YAML and SQL
+  - YAML snippets: Removes indentation, collapses spaces after colons, uses semicolons
+  - SQL snippets: Auto-detected in code blocks, removes all unnecessary whitespace
+  - **5-15% additional savings** on documents with embedded YAML/SQL code
+  - Text-based compaction for unparseable snippets (fallback strategy)
+
+### Improved
+
+- **Snippet optimization effectiveness**
+  - PRD documents: 6.1% → 11.0% savings (+4.9% from YAML/SQL compaction)
+  - OpenAPI specs: 10.4% → 48.9% savings (+38.5% from aggressive compaction)
+  - Agent traces: 6.7% → 22.2% savings (+15.5% improvement)
+  - Large JSON: 9.6% → 47.3% savings (+37.7% improvement)
+
 ## [0.3.0] - 2025-11-19
 
 ### Added

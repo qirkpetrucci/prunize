@@ -151,11 +151,10 @@ function compactOutput(output: string, format: OutputFormat | "strip", compact: 
         .trim();
     
     case "strip":
-      // Strip compaction: Collapse multiple spaces and newlines
-      // Preserve single spaces between words
+      // Strip compaction: Collapse whitespace and newlines
       return output
-        .replace(/\n+/g, ' ') // Replace newlines with single space
-        .replace(/\s+/g, ' ') // Collapse multiple spaces
+        .replace(/\n+/g, ' ')       // Replace all newlines with space
+        .replace(/\s+/g, ' ')       // Collapse multiple spaces
         .trim();
     
     default:
@@ -464,7 +463,6 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
                 optimizedSnippet = compactOutput(optimizedSnippet, analysis.format, COMPACT);
                 
                 // Use optimized snippet directly without wrapper
-                // Adding code fence wrapper would increase tokens
                 optimizedSegments.push(optimizedSnippet);
                 
                 if (options?.verbose) {
@@ -474,8 +472,47 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
                   console.log(`  ✓ ${segment.type} → ${analysis.format} (${saved}% smaller, ${analysis.format === 'toon' ? 'library-based' : 'custom'})`);
                 }
               } else {
-                // Couldn't parse, keep original
-                optimizedSegments.push(segment.content);
+                // Option 2: For unparseable YAML/code snippets, apply text-based compaction
+                let optimizedSnippet = segment.content;
+                
+                if (segment.type === 'yaml') {
+                  // Compact YAML snippet (couldn't parse to object)
+                  optimizedSnippet = segment.content
+                    .replace(/\n\s+/g, '\n')        // Remove indentation
+                    .replace(/:\s+/g, ':')          // Remove space after colons
+                    .replace(/\n/g, ';')            // Replace newlines with semicolons
+                    .replace(/  +/g, ' ')           // Collapse spaces
+                    .trim();
+                  
+                  if (options?.verbose) {
+                    const originalLen = segment.content.length;
+                    const optimizedLen = optimizedSnippet.length;
+                    const saved = ((originalLen - optimizedLen) / originalLen * 100).toFixed(1);
+                    console.log(`  ✓ yaml → compact (${saved}% smaller, text-based)`);
+                  }
+                } else if (segment.type === 'code') {
+                  // Try to detect if it's SQL
+                  const lowerContent = segment.content.toLowerCase();
+                  if (lowerContent.includes('select ') || lowerContent.includes('create table') || 
+                      lowerContent.includes('insert into') || lowerContent.includes('update ')) {
+                    // Compact SQL snippet
+                    optimizedSnippet = segment.content
+                      .replace(/\s+/g, ' ')           // Collapse all whitespace
+                      .replace(/\(\s+/g, '(')         // Remove space after (
+                      .replace(/\s+\)/g, ')')         // Remove space before )
+                      .replace(/,\s+/g, ',')          // Remove space after commas
+                      .trim();
+                    
+                    if (options?.verbose) {
+                      const originalLen = segment.content.length;
+                      const optimizedLen = optimizedSnippet.length;
+                      const saved = ((originalLen - optimizedLen) / originalLen * 100).toFixed(1);
+                      console.log(`  ✓ sql → compact (${saved}% smaller, text-based)`);
+                    }
+                  }
+                }
+                
+                optimizedSegments.push(optimizedSnippet);
               }
             } catch (error) {
               // Failed to optimize this snippet, keep original

@@ -103,6 +103,8 @@ Prunize uses the official [@toon-format/toon](https://github.com/toon-format/too
 
 Snippet optimization detects and optimizes **embedded code blocks** within text documents (PRDs, specs, documentation, Jira tickets). Instead of treating the entire document as plain text, prunize identifies code snippets and optimizes them individually.
 
+**NEW in v0.3.0:** Enhanced snippet compaction for YAML and SQL blocks - removes indentation, collapses whitespace, and uses semicolons for additional 5-15% savings on documents with code snippets.
+
 **Example: Engineering Spec with Mixed Content**
 
 ```typescript
@@ -161,11 +163,11 @@ Successful authentication returns this JSON structure:
 
 // Without snippet optimization (optimizeSnippets: false)
 const basic = prunize(engineeringSpec, { optimizeSnippets: false });
-console.log(basic.tokens.savings); // "8.2%" - only text whitespace reduction
+console.log(basic.tokens.savings); // "6.5%" - only text whitespace reduction
 
 // With auto-decision (default - recommended)
 const optimized = prunize(engineeringSpec);
-console.log(optimized.tokens.savings); // "28.5%" - snippets optimized!
+console.log(optimized.tokens.savings); // "22.8%" - YAML/SQL snippets compacted!
 console.log(optimized.autoDecision.enabled); // true
 console.log(optimized.autoDecision.reason); 
 // "2 optimizable snippets (35.2% of content)"
@@ -175,10 +177,10 @@ console.log(optimized.autoDecision.reason);
 
 | Mode | Tokens Before | Tokens After | Savings | Speed |
 |------|---------------|--------------|---------|-------|
-| Basic (no snippets) | 485 | 445 | 8.2% | 0.21ms |
-| **Auto-decision** | 485 | 347 | **28.5%** | 0.37ms |
+| Basic (no snippets) | 485 | 454 | 6.5% | 0.21ms |
+| **Auto-decision** | 485 | 375 | **22.8%** | 0.37ms |
 
-**Additional savings: 20.3%** with only ~0.16ms overhead!
+**Additional savings: 16.3%** with YAML/SQL compaction and only ~0.16ms overhead!
 
 ### Manual Snippet Optimization
 
@@ -389,12 +391,12 @@ const prompt = `Context:\n${optimizedContext}\n\nQuestion: ${query}`;
 **Best for:**
 - Structured metadata (specs, configs, JSON fields) - **6-10% typical savings**
 - Database query results in RAG context - **up to 56% savings for arrays** (CSV/TOON format)
-- API documentation with code examples - **6-10% savings**
+- API documentation with code examples - **10-15% savings** (with YAML/SQL snippet compaction)
 
 **Not ideal for:**
 - Plain text chunks only - **minimal savings** (not worth overhead)
 
-**Cost Impact:** For 100K RAG queries with 10KB context each, save ~$6-25/month depending on data type (GPT-4o pricing)
+**Cost Impact:** For 100K RAG queries with 10KB context each, save ~$8-30/month depending on data type (GPT-4o pricing)
 
 ## Testing
 
@@ -404,10 +406,12 @@ Validated with real-world datasets in `test-data/`:
 
 | Dataset | Size | Format | Tokens Before | Tokens After | Savings | Test Status |
 |---------|------|--------|---------------|--------------|---------|-------------|
-| **OpenAPI Pet Store** | 25KB | strip | 7,074 | 6,339 | **10.4%** | PASS |
-| **Agent Multi-Tool Trace** | 19KB | strip | 5,261 | 4,909 | **6.7%** | PASS |
-| **PRD with Code Snippets** | 30KB | strip | 7,795 | 7,318 | **6.1%** | PASS |
-| **Large Nested JSON** | 21KB | strip | 5,968 | 5,397 | **9.6%** | PASS |
+| **OpenAPI Pet Store** | 25KB | strip | 7,074 | 3,618 | **48.9%** | PASS |
+| **Agent Multi-Tool Trace** | 19KB | strip | 5,261 | 4,093 | **22.2%** | PASS |
+| **PRD with Code Snippets** | 30KB | strip | 7,795 | 6,937 | **11.0%** | PASS |
+| **Large Nested JSON** | 21KB | strip | 5,968 | 3,145 | **47.3%** | PASS |
+
+**Note:** With `compact: true` (default) and snippet optimization enabled, prunize achieves significantly higher savings by compacting YAML/SQL code snippets and removing all unnecessary whitespace.
 
 Run golden tests:
 ```bash

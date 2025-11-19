@@ -413,6 +413,25 @@ Validated with real-world datasets in `test-data/`:
 
 **Note:** With `compact: true` (default) and snippet optimization enabled, prunize achieves significantly higher savings by compacting YAML/SQL code snippets and removing all unnecessary whitespace.
 
+### LLM Validation Results
+
+Validated with real LLM analysis using GPT-4o-mini to verify that optimized prompts preserve context and meaning:
+
+| Dataset | Input Tokens | Optimized Tokens | Savings | Execution Time | Context Preserved |
+|---------|--------------|------------------|---------|----------------|-------------------|
+| **OpenAPI Spec** | 10,438 | 8,416 | **19.4%** | 4.96s | ✅ Yes |
+| **Agent Traces** | 2,388 | 2,152 | **9.9%** | 5.68s | ✅ Yes |
+| **RAG Metadata** | 2,294 | 2,100 | **8.5%** | 4.12s | ✅ Yes |
+| **File Trees** | 3,856 | 3,524 | **8.6%** | 2.84s | ✅ Yes |
+| **PRD with Snippets** | 3,948 | 3,357 | **15.0%** | 4.33s | ✅ Yes |
+
+**Validation Method:** Each dataset was sent to GPT-4o-mini twice (original and optimized). The LLM responses were compared to verify that:
+- The LLM understands both prompts similarly
+- Core meaning and context are preserved
+- No critical information is lost during optimization
+
+**Try it yourself:** [Prunize LLM Validation Demo](https://prunize-demo-llm.netlify.app/) - Interactive tool to test optimization with real OpenAI API calls.
+
 Run golden tests:
 ```bash
 npm run test:golden         # Run validation tests (16 tests)

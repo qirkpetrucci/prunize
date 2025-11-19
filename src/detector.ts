@@ -1,4 +1,4 @@
-export type FormatType = "csv" | "toon" | "compact" | "strip";
+export type FormatType = "csv" | "toon" | "strip";
 
 export interface StructureAnalysis {
   format: FormatType;
@@ -238,12 +238,12 @@ export function detectFormat(input: any): StructureAnalysis {
     };
   }
 
-  // Priority 4: Check for shallow objects (Compact)
+  // Priority 4: Check for shallow objects (use TOON - compaction handled separately)
   if (isShallowObject(input)) {
     return {
-      format: "compact",
+      format: "toon",
       confidence: 0.75,
-      reason: "Shallow key-value structure - compact format is optimal"
+      reason: "Shallow key-value structure - TOON format with compaction is optimal"
     };
   }
 

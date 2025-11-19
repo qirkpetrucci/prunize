@@ -156,14 +156,12 @@ export function toStrip(input: any): string {
 /**
  * Format dispatcher - converts input to specified format
  */
-export function formatAs(input: any, format: "csv" | "toon" | "compact" | "strip"): string {
+export function formatAs(input: any, format: "csv" | "toon" | "strip"): string {
   switch (format) {
     case "csv":
       return toCSV(input);
     case "toon":
       return toTOON(input);
-    case "compact":
-      return toCompact(input);
     case "strip":
       return toStrip(input);
     default:

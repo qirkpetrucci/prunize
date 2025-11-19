@@ -228,78 +228,7 @@ CREATE TRIGGER update_documents_updated_at
 
 #### WebSocket Protocol
 
-join_document:
-  type: join_document
-  payload:
-    document_id: string
-    user_id: string
-    "cursor_position?": number
-leave_document:
-  type: leave_document
-  payload:
-    document_id: string
-    user_id: string
-apply_operation:
-  type: apply_operation
-  payload:
-    document_id: string
-    operation:
-      id: string
-      type: "insert\" | \"delete\" | \"format\" | \"move"
-      position: number
-      "content?": string
-      "attributes?": object
-      userId: string
-      timestamp: number
-      vectorClock: object
-update_cursor:
-  type: update_cursor
-  payload:
-    document_id: string
-    user_id: string
-    cursor_position: number
-    "selection_start?": number
-    "selection_end?": number
-document_state:
-  type: document_state
-  payload:
-    document_id: string
-    version: number
-    content: object
-    participants: array
-operation_applied:
-  type: operation_applied
-  payload:
-    document_id: string
-    operation: object
-    version: number
-cursor_update:
-  type: cursor_update
-  payload:
-    document_id: string
-    user_id: string
-    cursor_position: number
-    "selection_start?": number
-    "selection_end?": number
-participant_joined:
-  type: participant_joined
-  payload:
-    document_id: string
-    user:
-      id: string
-      name: string
-      avatar_url: string
-participant_left:
-  type: participant_left
-  payload:
-    document_id: string
-    user_id: string
-error:
-  type: error
-  payload:
-    code: string
-    message: string
-    "details?": object
+join_document:type: join_document;payload:document_id: string;user_id: string;"cursor_position?": number;leave_document:type: leave_document;payload:document_id: string;user_id: string;apply_operation:type: apply_operation;payload:document_id: string;operation:id: string;type: "insert\" | \"delete\" | \"format\" | \"move";position: number;"content?": string;"attributes?": object;userId: string;timestamp: number;vectorClock: object;update_cursor:type: update_cursor;payload:document_id: string;user_id: string;cursor_position: number;"selection_start?": number;"selection_end?": number;document_state:type: document_state;payload:document_id: string;version: number;content: object;participants: array;operation_applied:type: operation_applied;payload:document_id: string;operation: object;version: number;cursor_update:type: cursor_update;payload:document_id: string;user_id: string;cursor_position: number;"selection_start?": number;"selection_end?": number;participant_joined:type: participant_joined;payload:document_id: string;user:id: string;name: string;avatar_url: string;participant_left:type: participant_left;payload:document_id: string;user_id: string;error:type: error;payload:code: string;message: string;"details?": object
 
 ### 2. Video Conferencing
 
@@ -605,52 +534,7 @@ Intelligent assistant that helps with document summarization, meeting notes, act
 
 #### AI Service Configuration
 
-ai_assistant:
-  provider: openai
-  models:
-    chat:
-      model: gpt-4-turbo
-      temperature: 0.7
-      max_tokens: 2000
-      top_p: 0.9
-    summarization:
-      model: gpt-4-turbo
-      temperature: 0.3
-      max_tokens: 500
-    embeddings:
-      model: text-embedding-3-large
-      dimensions: 1024
-  features:
-    document_summarization:
-      enabled: true
-      max_document_length: 50000
-      chunk_size: 4000
-      chunk_overlap: 200
-    meeting_transcription:
-      enabled: true
-      language: en
-      realtime: true
-      speaker_diarization: true
-    action_items_extraction:
-      enabled: true
-      confidence_threshold: 0.8
-      auto_assign: true
-    smart_search:
-      enabled: true
-      semantic_search: true
-      result_limit: 20
-      rerank: true
-    code_assistance:
-      enabled: true
-      languages[5]: typescript,python,javascript,go,rust
-      features[3]: explanation,bug_detection,optimization
-  rate_limits:
-    requests_per_user_per_hour: 100
-    tokens_per_user_per_day: 100000
-  safety:
-    content_filtering: true
-    pii_detection: true
-    toxicity_threshold: 0.8
+ai_assistant:provider: openai;models:chat:model: gpt-4-turbo;temperature: 0.7;max_tokens: 2000;top_p: 0.9;summarization:model: gpt-4-turbo;temperature: 0.3;max_tokens: 500;embeddings:model: text-embedding-3-large;dimensions: 1024;features:document_summarization:enabled: true;max_document_length: 50000;chunk_size: 4000;chunk_overlap: 200;meeting_transcription:enabled: true;language: en;realtime: true;speaker_diarization: true;action_items_extraction:enabled: true;confidence_threshold: 0.8;auto_assign: true;smart_search:enabled: true;semantic_search: true;result_limit: 20;rerank: true;code_assistance:enabled: true;languages[5]: typescript,python,javascript,go,rust;features[3]: explanation,bug_detection,optimization;rate_limits:requests_per_user_per_hour: 100;tokens_per_user_per_day: 100000;safety:content_filtering: true;pii_detection: true;toxicity_threshold: 0.8
 
 #### AI Assistant Implementation
 
@@ -830,72 +714,7 @@ Connect with popular tools (GitHub, Jira, Slack, Figma, Linear) to centralize no
 
 #### Integration Configuration
 
-integrations:
-  github:
-    enabled: true
-    oauth:
-      client_id: "${GITHUB_CLIENT_ID}"
-      client_secret: "${GITHUB_CLIENT_SECRET}"
-      scopes:
-        scopes[4]:
-          - repo
-          - read: org
-          - read: user
-          - notifications
-    webhooks:
-      webhooks[5]: pull_request,pull_request_review,issues,push,release
-    features:
-      code_review_in_app: true
-      pr_notifications: true
-      issue_sync: true
-  jira:
-    enabled: true
-    oauth:
-      client_id: "${JIRA_CLIENT_ID}"
-      client_secret: "${JIRA_CLIENT_SECRET}"
-    webhooks:
-      webhooks[3]:
-        - jira: issue_created
-        - jira: issue_updated
-        - comment_created
-    features:
-      issue_creation: true
-      status_sync: true
-      sprint_view: true
-  slack:
-    enabled: true
-    oauth:
-      client_id: "${SLACK_CLIENT_ID}"
-      client_secret: "${SLACK_CLIENT_SECRET}"
-      scopes:
-        scopes[3]:
-          - channels: read
-          - chat: write
-          - users: read
-    features:
-      message_sync: true
-      notification_forward: true
-      slash_commands: true
-  figma:
-    enabled: true
-    oauth:
-      client_id: "${FIGMA_CLIENT_ID}"
-      client_secret: "${FIGMA_CLIENT_SECRET}"
-    webhooks:
-      webhooks[2]: FILE_UPDATE,FILE_COMMENT
-    features:
-      embed_designs: true
-      comment_sync: true
-      version_history: true
-  linear:
-    enabled: true
-    api_key: "${LINEAR_API_KEY}"
-    webhooks:
-      webhooks[3]: Issue,Comment,Project
-    features:
-      issue_sync: true
-      cycle_view: true
-      roadmap_embed: true
+integrations:github:enabled: true;oauth:client_id: "${GITHUB_CLIENT_ID}";client_secret: "${GITHUB_CLIENT_SECRET}";scopes:scopes[4]:- repo;- read: org;- read: user;- notifications;webhooks:webhooks[5]: pull_request,pull_request_review,issues,push,release;features:code_review_in_app: true;pr_notifications: true;issue_sync: true;jira:enabled: true;oauth:client_id: "${JIRA_CLIENT_ID}";client_secret: "${JIRA_CLIENT_SECRET}";webhooks:webhooks[3]:- jira: issue_created;- jira: issue_updated;- comment_created;features:issue_creation: true;status_sync: true;sprint_view: true;slack:enabled: true;oauth:client_id: "${SLACK_CLIENT_ID}";client_secret: "${SLACK_CLIENT_SECRET}";scopes:scopes[3]:- channels: read;- chat: write;- users: read;features:message_sync: true;notification_forward: true;slash_commands: true;figma:enabled: true;oauth:client_id: "${FIGMA_CLIENT_ID}";client_secret: "${FIGMA_CLIENT_SECRET}";webhooks:webhooks[2]: FILE_UPDATE,FILE_COMMENT;features:embed_designs: true;comment_sync: true;version_history: true;linear:enabled: true;api_key: "${LINEAR_API_KEY}";webhooks:webhooks[3]: Issue,Comment,Project;features:issue_sync: true;cycle_view: true;roadmap_embed: true
 
 ## Technical Requirements
 
@@ -924,32 +743,7 @@ integrations:
 
 ### Infrastructure
 
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: collab-api-hpa
-  namespace: production
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: collab-platform-api
-  minReplicas: 10
-  maxReplicas: 100
-  metrics:
-  spec[2]:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 80
+apiVersion: autoscaling/v2;kind: HorizontalPodAutoscaler;metadata:name: collab-api-hpa;namespace: production;spec:scaleTargetRef:apiVersion: apps/v1;kind: Deployment;name: collab-platform-api;minReplicas: 10;maxReplicas: 100;metrics:spec[2]:- type: Resource;resource:name: cpu;target:type: Utilization;averageUtilization: 70;- type: Resource;resource:name: memory;target:type: Utilization;averageUtilization: 80
 
 ## Success Metrics
 

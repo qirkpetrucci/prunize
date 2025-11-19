@@ -6,6 +6,62 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.3.0] - 2025-11-19
+
+### Added
+
+- **New `compact` option** - Apply whitespace removal to any format
+  - `compact: true` (default) - Remove whitespace, newlines, indentation for max token savings
+  - `compact: false` - Keep readable formatting with newlines and indentation (useful for debugging)
+  - Works with all formats: TOON, CSV, Strip
+  - Format-specific compaction strategies:
+    - **TOON**: Removes newlines, collapses spaces, uses semicolons
+    - **CSV**: Replaces newlines with semicolons
+    - **Strip**: Collapses multiple spaces and newlines
+
+- **Format forcing** - New `format` option for explicit format selection
+  - `format: 'toon'` - Force TOON object notation
+  - `format: 'csv'` - Force CSV table format
+  - `format: 'strip'` - Force plain text format
+  - `undefined` (default) - Auto-detect best format
+
+### Changed
+
+- **`format: 'compact'` is now DEPRECATED** (backward compatible)
+  - Old: `prunize(data, { format: 'compact' })`
+  - New: `prunize(data, { compact: true })`
+  - Migration is automatic - old code still works with deprecation warning in dev/verbose mode
+  - Deprecation warning only shows in development (`NODE_ENV=development`) or `verbose: true`
+  - Will be removed in v1.0.0
+
+- **Clearer API semantics**
+  - `format` option = output structure (TOON, CSV, Strip)
+  - `compact` option = whitespace optimization (true/false)
+  - Better separation of concerns
+
+### Migration Guide
+
+**No breaking changes!** Your existing code continues to work:
+
+```typescript
+// ✅ Still works (with deprecation warning in dev/verbose mode)
+prunize(data, { format: 'compact' });
+
+// ✨ New recommended way
+prunize(data, { compact: true });              // Auto-detect + compact (recommended)
+prunize(data, { format: 'toon', compact: true }); // TOON + compact
+prunize(data, { format: 'csv', compact: false }); // CSV + readable (debugging)
+```
+
+**Why change?**
+- **Clearer API** - `compact` is a post-processing modifier, not a format type
+- **More flexible** - Apply compaction to any format (TOON, CSV, Strip)
+- **Better defaults** - `compact: true` by default for max savings out-of-the-box
+- **Debuggable** - Set `compact: false` for readable output during development
+
+**TypeScript users**: IDE will show error for `format: 'compact'`, guiding you to new API. Runtime still accepts it for backward compatibility.
+
+
 ## [0.2.0] - 2025-11-17
 
 ### ⚠️ BREAKING CHANGES

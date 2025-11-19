@@ -3,7 +3,28 @@ import { formatAs } from "./formatters.js";
 import { convertToToon } from "./converter.js";
 import { estimateTokens, parseSimpleYAML, parseSimpleXML, parseSimpleHTML, detectSnippets } from "./utils.js";
 
+/**
+ * Output format types (compact is now an option, not a format)
+ */
+export type OutputFormat = "csv" | "toon" | "strip";
+
 export interface PrunizeOptions {
+  /**
+   * Output format selection
+   * - `undefined` (default): Auto-detect best format based on input structure
+   * - `'csv'`: Force CSV table format
+   * - `'toon'`: Force TOON object notation
+   * - `'strip'`: Force plain text format
+   */
+  format?: OutputFormat;
+  /**
+   * Remove whitespace for maximum token savings (default: true)
+   * - `true` (default): Strip whitespace, newlines, indentation for compact output
+   * - `false`: Keep readable formatting (useful for debugging)
+   * 
+   * Works with all formats (TOON, CSV, Strip)
+   */
+  compact?: boolean;
   verbose?: boolean;
   /**
    * Enable snippet detection & optimization for large text documents
@@ -31,7 +52,7 @@ export interface PrunizeOptions {
 }
 
 export interface PrunizeResult {
-  format: "csv" | "toon" | "compact" | "strip";
+  format: "csv" | "toon" | "strip";
   output: string;
   tokens: {
     before: number;
@@ -94,6 +115,55 @@ function hasCircularReference(obj: any, maxDepth: number = 100): boolean {
   };
   
   return check(obj, 0);
+}
+
+/**
+ * Apply compaction to output based on format
+ * Removes whitespace, newlines, and indentation for maximum token savings
+ * 
+ * @param output - Formatted output string
+ * @param format - Output format type
+ * @param compact - Whether to apply compaction
+ * @returns Compacted output string
+ */
+function compactOutput(output: string, format: OutputFormat | "strip", compact: boolean): string {
+  if (!compact) {
+    return output; // Keep readable formatting
+  }
+  
+  switch (format) {
+    case "toon":
+      // TOON compaction: Remove newlines and extra spaces
+      // Pattern: "users[2]{id,name}:\n  1,Alice\n  2,Bob"
+      // Result: "users[2]{id,name}:1,Alice;2,Bob"
+      return output
+        .replace(/:\s*\n\s*/g, ':') // Remove newlines after colons
+        .replace(/\n\s*/g, ';') // Replace newlines with semicolons
+        .replace(/\s+/g, ' ') // Collapse multiple spaces
+        .trim();
+    
+    case "csv":
+      // CSV compaction: Replace newlines with semicolons
+      // Pattern: "id,name\n1,Alice\n2,Bob"
+      // Result: "id,name;1,Alice;2,Bob"
+      return output
+        .replace(/\n/g, ';')
+        .trim();
+    
+    case "strip":
+      // Strip compaction: Collapse multiple spaces and newlines
+      // Preserve single spaces between words
+      return output
+        .replace(/\n+/g, ' ') // Replace newlines with single space
+        .replace(/\s+/g, ' ') // Collapse multiple spaces
+        .trim();
+    
+    default:
+      // Default: Collapse whitespace
+      return output
+        .replace(/\s+/g, ' ')
+        .trim();
+  }
 }
 
 /**
@@ -262,9 +332,26 @@ function shouldUseSnippetOptimization(content: string, verbose: boolean): AutoDe
  * ```
  */
 export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
+  // BACKWARD COMPATIBILITY: Handle deprecated format: 'compact'
+  if ((options as any)?.format === 'compact') {
+    // Show deprecation warning in development or verbose mode
+    if (options?.verbose || process.env.NODE_ENV === 'development') {
+      console.warn(
+        '[prunize] DEPRECATION: format: "compact" is deprecated in v0.3.0.\n' +
+        'Use compact: true instead. Example: prunize(data, { compact: true })\n' +
+        'This fallback will be removed in v1.0.0.'
+      );
+    }
+    
+    // Auto-migrate to new API
+    (options as any).format = undefined; // Auto-detect format
+    options = { ...options, compact: true };
+  }
+  
   // Constants
   const MAX_INPUT_SIZE = options?.maxInputSize !== undefined ? options.maxInputSize : 100 * 1024; // 100KB default
   const MAX_DEPTH = options?.maxDepth !== undefined ? options.maxDepth : 100; // 100 levels default
+  const COMPACT = options?.compact !== undefined ? options.compact : true; // Compact by default
   
   // Validate input size
   if (MAX_INPUT_SIZE > 0) {
@@ -369,9 +456,12 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
                     verbose: false // Avoid nested verbose logs
                   });
                 } else {
-                  // Use other formatters (CSV, compact, strip)
+                  // Use other formatters (CSV, strip)
                   optimizedSnippet = formatAs(parsed, analysis.format);
                 }
+                
+                // Apply compaction to snippet
+                optimizedSnippet = compactOutput(optimizedSnippet, analysis.format, COMPACT);
                 
                 // Use optimized snippet directly without wrapper
                 // Adding code fence wrapper would increase tokens
@@ -559,15 +649,21 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
     };
   }
   
-  // Detect best format
-  const analysis = detectFormat(input);
+  // Detect best format (or use forced format from options)
+  const analysis = options?.format 
+    ? { format: options.format, reason: "User-specified format", confidence: 1.0 }
+    : detectFormat(input);
   
   // Convert to original JSON for comparison
   const originalJson = JSON.stringify(input);
   const originalTokens = estimateTokens(originalJson);
   
-  // Apply detected format
-  const optimizedOutput = formatAs(input, analysis.format);
+  // Apply detected/forced format
+  let optimizedOutput = formatAs(input, analysis.format);
+  
+  // Apply compaction if enabled (default: true)
+  optimizedOutput = compactOutput(optimizedOutput, analysis.format, COMPACT);
+  
   const optimizedTokens = estimateTokens(optimizedOutput);
   
   // Calculate savings percentage
@@ -580,6 +676,7 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
     console.log(`[prunize] Detected format: ${analysis.format.toUpperCase()}`);
     console.log(`[prunize] Reason: ${analysis.reason}`);
     console.log(`[prunize] Confidence: ${(analysis.confidence * 100).toFixed(1)}%`);
+    console.log(`[prunize] Compaction: ${COMPACT ? 'enabled' : 'disabled'}`);
     console.log(`[prunize] Original tokens: ${originalTokens}, Optimized: ${optimizedTokens}, Savings: ${savingsPercent.toFixed(1)}%`);
   }
   

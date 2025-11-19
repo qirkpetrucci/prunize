@@ -10,6 +10,34 @@ Auto-detects input types (JSON, YAML, XML, HTML, text) and selects the optimal o
 
 **TOON Format Integration:** Prunize uses the official [@toon-format/toon](https://github.com/toon-format/toon) library (not just inspired by the spec). This ensures 100% spec compliance, production-grade safety, and comprehensive edge case handling - making prunize **400x safer** than custom TOON implementations.
 
+## Installation
+
+```bash
+npm install prunize
+```
+
+## Quick Start
+
+```typescript
+import { prunize } from 'prunize';
+
+const data = {
+  users: [
+    { id: 1, name: "Alice", role: "Admin" },
+    { id: 2, name: "Bob", role: "User" }
+  ]
+};
+
+const result = prunize(data);
+
+console.log(result.output);
+// users[2]{id,name,role}:
+//   1,Alice,Admin
+//   2,Bob,User
+
+console.log(result.tokens.savings); // "56.6%"
+```
+
 ## Why Prunize?
 
 - **Save costs** - Reduce API bills by 6-56%
@@ -56,33 +84,7 @@ Auto-detects input types (JSON, YAML, XML, HTML, text) and selects the optimal o
 - Fine-tuned instructions (may break carefully crafted prompts)
 - Chain-of-thought reasoning (structure affects thinking)
 
-## Installation
 
-```bash
-npm install prunize
-```
-
-## Quick Start
-
-```typescript
-import { prunize } from 'prunize';
-
-const data = {
-  users: [
-    { id: 1, name: "Alice", role: "Admin" },
-    { id: 2, name: "Bob", role: "User" }
-  ]
-};
-
-const result = prunize(data);
-
-console.log(result.output);
-// users[2]{id,name,role}:
-//   1,Alice,Admin
-//   2,Bob,User
-
-console.log(result.tokens.savings); // "56.6%"
-```
 
 ### Built on Solid Foundation
 
@@ -96,45 +98,6 @@ Prunize uses the official [@toon-format/toon](https://github.com/toon-format/too
 - **Graceful Fallback** - Custom converter if needed
 
 **Why it matters**: Custom TOON implementations have ~40% failure rate on real-world data. Using the official library reduces this to <0.1% - **400x safer**!
-
-
-## Advanced Usage
-
-### Default Behavior (Auto-Decision Mode)
-
-By default, prunize uses **intelligent auto-decision** to deliver the best optimization:
-
-```typescript
-const result = prunize(data);
-// Equivalent to:
-// prunize(data, {
-//   format: undefined,           // Auto-detect best format
-//   optimizeSnippets: 'auto',    // Smart auto-decision (DEFAULT)
-//   verbose: false               // Silent mode
-// })
-```
-
-**Auto-Decision Benefits:**
-- **Best optimization** - Automatically enables snippet optimization when beneficial
-- **Smart** - Analyzes content to decide (>15% snippets, ≤20 blocks, optimizable types)
-- **Fast** - Only ~0.16ms overhead (7.5% of execution time)
-- **Safe** - Skips optimization when it won't help
-
-**When Auto-Decision Enables Optimization:**
-- Documents with embedded code blocks (JSON, YAML, XML, HTML)
-- Snippets comprise >15% of total content
-- Reasonable snippet count (≤20 blocks)
-- Result: **10-40% additional token savings**
-
-**To Disable Auto-Decision:**
-
-If you find the ~0.16ms overhead too much, disable it:
-
-```typescript
-// Disable snippet optimization completely
-const result = prunize(data, { optimizeSnippets: false });
-// Faster execution, but no snippet optimization
-```
 
 ### What is Snippet Optimization?
 
@@ -232,91 +195,34 @@ const result = prunize(apiDoc, { optimizeSnippets: false });
 const result = prunize(apiDoc, { optimizeSnippets: 'auto' });
 ```
 
-**Example with Auto-Decision:**
-
-```typescript
-const apiDoc = `
-# Payment API
-\`\`\`json
-{"transaction": {"amount": "1000.00"}}
-\`\`\`
-`;
-
-// Auto-decision analyzes and decides (this is the default)
-const result = prunize(apiDoc);
-
-console.log(result.autoDecision.enabled);        // true
-console.log(result.autoDecision.reason);         // "1 optimizable snippets (24.8%)"
-console.log(result.tokens.savings);              // "30.7%"
-```
-
 ### Force Format
 
 ```typescript
-prunize(data, { format: 'csv' });
-prunize(data, { format: 'toon' });
-prunize(data, { format: 'compact' });
-prunize(data, { format: 'strip' });
-```
-
-### TOON Library Options
-
-Control how prunize uses the @toon-format/toon library:
-
-```typescript
-// Verbose mode - see validation warnings
-const result = prunize(data, { verbose: true });
-// [prunize] TOON validation warnings:
-//   - root.tags[0]: Contains reserved TOON characters (will be quoted)
-
-// Disable auto-preprocessing (strict validation mode)
-const result = prunize(data, { preprocessData: false });
-// Will throw error if data contains Date, Map, Set, etc.
-
-// Disable validation (fastest, but risky)
-const result = prunize(data, { validateBeforeEncode: false });
-// Not recommended - may produce invalid TOON
-
-// Use custom converter (legacy mode)
-const result = prunize(data, { useTOONLibrary: false });
-// Falls back to custom implementation (not recommended)
-```
-
-**Recommendation**: Use default settings for best balance of safety and performance.
-
-### Input Size Limits
-
-By default, prunize limits input size to **100KB** to prevent performance issues. You can customize or disable this limit:
-
-```typescript
-// Default: 100KB limit
+// Auto-detect format (recommended)
 const result = prunize(data);
 
-// Custom limit: 500KB
-const result = prunize(largeData, { maxInputSize: 500 * 1024 });
-
-// Disable limit (use with caution!)
-const result = prunize(veryLargeData, { maxInputSize: 0 });
-
-// Error handling
-try {
-  const result = prunize(hugeData);
-} catch (error) {
-  console.error(error.message);
-  // "Input size (250.00 KB) exceeds maximum allowed size (100 KB)"
-}
+// Force specific format
+const csvResult = prunize(data, { format: 'csv' });
+const toonResult = prunize(data, { format: 'toon' });
+const stripResult = prunize(data, { format: 'strip' });
 ```
 
-**Recommendations:**
-- **Keep default (100KB)** for most use cases
-- **Increase limit** for known large inputs (PRDs, specs)
-- **Disable limit** only if you trust the input source
-- **Monitor performance** with large inputs (>500KB)
 
-**Why the limit?**
-- Prevents accidental hang on pathological inputs
-- Protects against memory exhaustion
-- Encourages chunking for very large datasets
+
+### Compaction Control
+
+```typescript
+// Default: Compact output (max token savings)
+const result = prunize(data);
+// Output: "users[2]{id,name}:1,Alice;2,Bob"
+
+// Readable output for debugging
+const readable = prunize(data, { compact: false });
+// Output:
+// users[2]{id,name}:
+//   1,Alice
+//   2,Bob
+```
 
 ### Verbose Logging
 
@@ -324,60 +230,31 @@ try {
 const result = prunize(data, { verbose: true });
 // [prunize] Detected format: CSV
 // [prunize] Confidence: 95.0%
+// [prunize] Compaction: enabled
 // [prunize] Tokens: 245 → 156 (36.3% savings)
 ```
 
-
-**Auto-decision overhead:** ~0.16ms (7.5% of execution time)
-
 ## Cost Savings
 
-Based on **GPT-4o pricing** ($2.50/1M input tokens) with typical 10% savings:
+**Real-World Example:** Medium SaaS (3M requests/month, 1,200 tokens avg)
 
-| Scale | Requests/Month | Before | After (10% savings) | Monthly Savings |
-|-------|----------------|--------|---------------------|------------------|
-| Small | 10,000 (500 tokens) | $12.50 | $11.25 | $1.25 |
-| Medium | 10,000 (1,200 tokens) | $30 | $27 | $3 |
-| Enterprise | 100,000 (2,000 tokens) | $500 | $450 | $50 |
+Based on **GPT-4o pricing** ($2.50/1M input tokens):
 
-*Note: Savings vary by data type. Optimized arrays (CSV/TOON) can achieve up to 56% savings, while typical real-world data averages 6-10%.*
+- **Structured data** (arrays, objects): 20-30% typical savings → **Save $2,700/month**
+- **Mixed content** (text + code): 6-10% typical savings → **Save $900/month**
 
-### Real-World Savings: Medium SaaS (3M requests/month)
-
-For a **medium-sized SaaS company** processing **3 million requests per month**:
-
-**Structured Data Workloads** (API responses, database results, agent communication):
-- Average: 1,200 tokens per request
-- Cost before: **$9,000/month**
-- Cost after (30% savings): **$6,300/month**
-- **Monthly savings: $2,700**
-- **Annual savings: $32,400**
-
-**Mixed Content Workloads** (PRDs, documentation, RAG context with snippets):
-- Average: 1,200 tokens per request
-- Cost before: **$9,000/month**
-- Cost after (10% savings): **$8,100/month**
-- **Monthly savings: $900**
-- **Annual savings: $10,800**
-
-**Notes:**
-- **Structured data** (arrays, objects, agent messages): 20-56% savings, 30% typical
-- **Mixed content** (text + code snippets): 6-10% savings typical
-- **Text-only** prompts: minimal savings (use prompt-optimizer instead)
-- Agentic systems with lots of tool results achieve higher savings (25-40%)
+*Note: Savings vary by data type. Arrays can achieve up to 56% with CSV/TOON format.*
 
 ## API Reference
 
 ```typescript
 prunize(input: any, options?: {
-  format?: 'csv' | 'toon' | 'compact' | 'strip',
+  format?: 'csv' | 'toon' | 'strip',  // Auto-detect if not specified
+  compact?: boolean,                   // Default: true, remove whitespace
   optimizeSnippets?: boolean | 'auto',
   maxInputSize?: number,  // Default: 100KB (102400 bytes), set 0 to disable
   maxDepth?: number,      // Default: 100 levels, set 0 to disable
-  verbose?: boolean,      // Default: false, show validation warnings
-  useTOONLibrary?: boolean,     // Default: true, use @toon-format/toon
-  validateBeforeEncode?: boolean, // Default: true, validate before encoding
-  preprocessData?: boolean       // Default: true, auto-fix common issues
+  verbose?: boolean       // Default: false, show optimization details
 }): {
   format: string,
   output: string,
@@ -396,14 +273,30 @@ prunize(input: any, options?: {
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `format` | `'csv' \| 'toon' \| 'compact' \| 'strip'` | Auto-detect | Force specific output format |
-| `optimizeSnippets` | `boolean \| 'auto'` | `'auto'` | Enable snippet optimization for mixed content |
+| `format` | `'csv' \| 'toon' \| 'strip'` | Auto-detect | Force specific output format |
+| **`compact`** | `boolean` | **`true`** | **Remove whitespace for max token savings. Set `false` for readable output (debugging)** |
+| `optimizeSnippets` | `boolean \| 'auto'` | `'auto'` | Enable snippet optimization for mixed content documents |
 | `maxInputSize` | `number` | `102400` (100KB) | Maximum input size in bytes. Set to `0` to disable limit |
 | `maxDepth` | `number` | `100` | Maximum nesting depth. Prevents stack overflow. Set to `0` to disable |
-| `verbose` | `boolean` | `false` | Enable detailed logging and validation warnings |
-| `useTOONLibrary` | `boolean` | `true` | Use official @toon-format/toon library (recommended) |
-| `validateBeforeEncode` | `boolean` | `true` | Validate data before TOON encoding (recommended) |
-| `preprocessData` | `boolean` | `true` | Auto-fix common issues like Date, Map, Set (recommended) |
+| `verbose` | `boolean` | `false` | Enable detailed logging and optimization details |
+
+**Return Type:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `format` | `'csv' \| 'toon' \| 'strip'` | Selected output format |
+| `output` | `string` | Optimized text output |
+| `tokens.before` | `number` | Token count before optimization |
+| `tokens.after` | `number` | Token count after optimization |
+| `tokens.savings` | `string` | Percentage savings (e.g., "39.2%") |
+| `confidence` | `number` | Format detection confidence (0-1) |
+| `autoDecision` | `object \| undefined` | Auto-decision metadata (only when `optimizeSnippets: 'auto'`) |
+
+**Notes:**
+- Prunize always uses the official [@toon-format/toon](https://github.com/toon-format/toon) library with validation and auto-preprocessing enabled for TOON format conversion
+- All TOON encoding is spec-compliant, safe, and handles edge cases (special characters, reserved patterns, unsupported types)
+- The library automatically converts Date, Map, Set to compatible formats
+- **v0.3.0 Change:** `compact` is now an option (not a format). Use `{ compact: true }` instead of `{ format: 'compact' }`
 
 ## How It Works
 
@@ -549,37 +442,6 @@ The examples folder demonstrates prunize's token efficiency with:
 - Performance: **~0.36ms average execution time** (with validation)
 
 The examples folder is completely independent - it downloads and uses the published npm package, making it a real-world usage example.
-
-### Development Testing
-
-For contributors running unit tests during development:
-
-```bash
-# Install dependencies first
-npm install
-
-# Run all unit tests (65 tests)
-npm test
-
-# Watch mode (auto-rerun on file changes)
-npm run test:watch
-
-# Generate coverage report
-npm run test:coverage
-```
-
-**Test Structure:**
-- **Unit Tests** (`__tests__/`) - 65 tests covering all core functionality
-  - `detector.test.ts` - Format detection logic (14 tests)
-  - `formatters.test.ts` - Conversion functions (17 tests)
-  - `integration.test.ts` - End-to-end scenarios (13 tests)
-  - `golden.test.ts` - Real-world dataset validation (16 tests)
-  - `circular-detection.test.ts` - Circular reference tests (5 tests)
-- **Golden Datasets** (`test-data/`) - Real-world inputs for regression testing (OpenAPI specs, agent traces, RAG metadata, file trees, PRDs with code snippets)
-- **Examples** (`examples/`) - Integration tests using published npm package
-  - `large-text.ts` - Real-world data scenarios
-
-All tests use Vitest framework with full TypeScript support and coverage reporting.
 
 ## License
 

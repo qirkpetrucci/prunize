@@ -27,10 +27,10 @@ describe('Format Detector', () => {
       expect(result.confidence).toBeGreaterThan(0.7);
     });
 
-    it('detects simple objects for COMPACT', () => {
+    it('detects simple objects for TOON (compact handled separately)', () => {
       const input = { name: 'Alice', age: 30, role: 'Admin' };
       const result = detectFormat(input);
-      expect(result.format).toBe('compact');
+      expect(result.format).toBe('toon');
     });
   });
 

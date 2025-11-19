@@ -7,7 +7,7 @@ describe('Prunize Integration Tests', () => {
       const input = { name: 'Alice', age: 30, role: 'Admin' };
       const result = prunize(input);
       
-      expect(result.format).toBe('compact');
+      expect(result.format).toBe('toon'); // Now uses TOON (compact handled separately)
       expect(result.output).toBeTruthy();
       expect(result.tokens.before).toBeGreaterThan(0);
       expect(result.tokens.after).toBeGreaterThan(0);

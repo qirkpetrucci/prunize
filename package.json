@@ -1,6 +1,6 @@
 {
   "name": "prunize",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Intelligent optimizer that detects the best prompt format to reduce LLM token usage",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

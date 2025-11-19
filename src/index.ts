@@ -538,15 +538,20 @@ export function prunize(input: any, options?: PrunizeOptions): PrunizeResult {
           console.log(`[prunize] Original tokens: ${originalTokens}, Optimized: ${optimizedTokens}, Savings: ${savingsPercent.toFixed(1)}%`);
         }
         
+        // Detect format from actual input for accurate reporting
+        const inputAnalysis = typeof input === 'string' 
+          ? { format: 'strip' as OutputFormat, confidence: 0.85 }
+          : detectFormat(input);
+        
         const result: PrunizeResult = {
-          format: "strip",
+          format: inputAnalysis.format,
           output: optimizedText,
           tokens: {
             before: originalTokens,
             after: optimizedTokens,
             savings: `${savingsPercent.toFixed(1)}%`
           },
-          confidence: 0.85
+          confidence: inputAnalysis.confidence
         };
         
         // Add auto-decision metadata if available

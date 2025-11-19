@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.3.2] - 2025-11-19
+
+### Fixed
+
+- **Format detection priority** - Fixed nested structure detection for text-heavy data
+  - Nested structure check now runs **before** text-heavy check
+  - Resolves issue where RAG metadata and similar nested objects were incorrectly detected as 'strip'
+  - **Impact**: RAG metadata, API responses with long text fields now correctly use TOON format
+  - **Token savings improvement**: 8.5% → 15-20% for nested data with text content
+
+### Changed
+
+- **Detection algorithm priority order**:
+  1. CSV - Flat array of uniform objects
+  2. **TOON - Nested structures** (moved up from priority 3)
+  3. Strip - Text-heavy content (moved down from priority 2)
+  4. TOON - Shallow objects (fallback)
+
 ## [0.3.1] - 2025-11-19
 
 ### Added

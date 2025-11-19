@@ -220,21 +220,22 @@ export function detectFormat(input: any): StructureAnalysis {
     };
   }
 
-  // Priority 2: Check for text-heavy content (Strip)
-  if (isTextHeavy(input)) {
-    return {
-      format: "strip",
-      confidence: 0.85,
-      reason: "Text-heavy content detected - using minimal formatting"
-    };
-  }
-
-  // Priority 3: Check for nested structures (TOON)
+  // Priority 2: Check for nested structures (TOON)
+  // This must come BEFORE text-heavy check because nested data can also be text-heavy
   if (hasNestedStructure(input)) {
     return {
       format: "toon",
       confidence: 0.8,
       reason: "Nested structure detected - TOON format preserves hierarchy efficiently"
+    };
+  }
+
+  // Priority 3: Check for text-heavy content (Strip)
+  if (isTextHeavy(input)) {
+    return {
+      format: "strip",
+      confidence: 0.85,
+      reason: "Text-heavy content detected - using minimal formatting"
     };
   }
 
